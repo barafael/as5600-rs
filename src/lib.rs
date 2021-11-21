@@ -8,6 +8,8 @@ mod test;
 use core::marker::PhantomData;
 use embedded_hal as hal;
 
+pub const DEFAULT_I2C_ADDRESS: u8 = 0x36;
+
 #[derive(Debug)]
 pub struct As5600<I2C, D, State> {
     i2c: I2C,
