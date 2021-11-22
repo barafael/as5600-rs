@@ -65,3 +65,20 @@ fn get_zmco() {
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
+
+#[test]
+fn get_zero_position() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x01],
+        vec![0b1001_1010, 0b1010_1111],
+    )]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(0b0000_1010_1010_1111, as5600.get_zero_position().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
