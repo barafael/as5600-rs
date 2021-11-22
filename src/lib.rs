@@ -2,13 +2,16 @@
 //#![deny(missing_docs)]
 #![cfg_attr(not(test), no_std)]
 
-#[cfg(test)]
-mod test;
-
 use core::marker::PhantomData;
 use embedded_hal as hal;
+use states::Initial;
 
-pub const DEFAULT_I2C_ADDRESS: u8 = 0x36;
+pub mod options;
+pub mod status;
+mod states;
+pub mod constants;
+#[cfg(test)]
+mod test;
 
 #[derive(Debug)]
 pub struct As5600<I2C, D, State> {
@@ -17,8 +20,6 @@ pub struct As5600<I2C, D, State> {
     delay: D,
     state: PhantomData<State>,
 }
-
-pub struct Initial;
 
 impl<I2C, D> As5600<I2C, D, Initial> {
     pub fn new(i2c: I2C, address: u8, delay: D) -> Self {
