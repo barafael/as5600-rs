@@ -14,7 +14,8 @@ impl TryFrom<u8> for Status {
     type Error = Error;
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
-        let bits = value & 0b00111000;
+        // See datasheet Fig. 21, section "Status Registers".
+        let bits = value & 0b0011_1000;
         match bits {
             0x8 => Ok(Self::MagnetHigh),
             0x10 => Ok(Self::MagnetLow),

@@ -34,11 +34,33 @@ fn detects_magnet() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert!((0..5)
-        .into_iter()
-        .map(|_| as5600.magnet_status())
-        .zip(expected_status)
-        .all(|(a, b)| a == b));
+    expected_status
+        .iter()
+        .map(|s| (as5600.magnet_status(), s))
+        .all(|(a, b)| a == *b);
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn get_zmco() {
+    let i2c = Mock::new(&[
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0000]),
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0010]),
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0011]),
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0100]),
+    ]);
+
+    let expected_status = [0, 1, 2, 3, 0];
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    expected_status
+        .iter()
+        .map(|s| (as5600.get_zmco(), *s))
+        .all(|(a, b)| a == Ok(b));
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();

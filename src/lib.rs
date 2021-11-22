@@ -41,6 +41,12 @@ where
         (self.i2c, self.delay)
     }
 
+    pub fn get_zmco(&mut self) -> Result<u8, E> {
+        let mut buffer = [0u8; 1];
+        self.i2c.write_read(self.address, &[0x00], &mut buffer)?;
+        Ok(buffer[0] & 0b0000_0011)
+    }
+
     pub fn magnet_status(&mut self) -> Result<status::Status, Error<E>> {
         let mut buffer = [0u8; 1];
         self.i2c.write_read(self.address, &[0x0b], &mut buffer)?;
