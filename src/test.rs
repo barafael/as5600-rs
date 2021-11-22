@@ -102,3 +102,20 @@ fn get_maximum_position() {
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
+
+#[test]
+fn get_maximum_angle() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x05],
+        vec![0b0001_1110, 0b1010_1011],
+    )]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(0b0000_1110_1010_1011, as5600.get_maximum_angle().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
