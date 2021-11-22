@@ -1,5 +1,3 @@
-use core::time::Duration;
-
 pub enum PowerMode {
     Nom,
     Lpm1,
