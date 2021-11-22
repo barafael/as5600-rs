@@ -1,4 +1,7 @@
 use crate::{
+    configuration::{
+        Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilter,
+    },
     error,
     status::{self, Status},
     As5600,
@@ -119,3 +122,33 @@ fn get_maximum_angle() {
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
+
+#[test]
+fn get_config() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x07],
+        vec![0b1110_0011, 0b1010_1100],
+    )]);
+
+    let expected_config = Configuration {
+        power_mode: PowerMode::Nom,
+        hysteresis: Hysteresis::Lsb3,
+        output_stage: OutputStage::DigitalPwm,
+        pwm_frequency: PwmFreq::PwmF3,
+        slow_filter: SlowFilter::X2,
+        fast_filter_threshold: FastFilterThreshold::SlowFilterOnly,
+        watchdog_state: crate::configuration::WatchdogState::On,
+        fields: 0b1110_0011_1010_1100,
+    };
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(expected_config, as5600.get_config().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+// TODO add proptest for roundtrip conversion of Configuration

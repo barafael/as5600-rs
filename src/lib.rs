@@ -2,15 +2,16 @@
 //#![deny(missing_docs)]
 #![cfg_attr(not(test), no_std)]
 
+use configuration::Configuration;
 use core::marker::PhantomData;
 use embedded_hal as hal;
 use error::Error;
 use hal::blocking::i2c;
 use states::Initial;
 
+pub mod configuration;
 pub mod constants;
 pub mod error;
-pub mod configuration;
 mod states;
 pub mod status;
 #[cfg(test)]
@@ -69,5 +70,10 @@ where
         let mut buffer = [0u8; 2];
         self.i2c.write_read(self.address, &[command], &mut buffer)?;
         Ok(u16::from_be_bytes(buffer))
+    }
+
+    pub fn get_config(&mut self) -> Result<Configuration, E> {
+        let bytes = self.read_u16(0x07)?;
+        Ok(bytes.into())
     }
 }
