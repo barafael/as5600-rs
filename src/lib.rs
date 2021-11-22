@@ -10,7 +10,7 @@ use states::Initial;
 
 pub mod constants;
 pub mod error;
-pub mod options;
+pub mod configuration;
 mod states;
 pub mod status;
 #[cfg(test)]
