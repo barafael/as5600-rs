@@ -54,25 +54,21 @@ where
     }
 
     pub fn get_zero_position(&mut self) -> Result<u16, E> {
-        let mut buffer = [0u8; 2];
-        self.i2c.write_read(self.address, &[0x01], &mut buffer)?;
-        let high_byte = buffer[0] & 0b0000_1111;
-        let low_byte = buffer[1];
-        Ok(u16::from(high_byte) << 8 | u16::from(low_byte))
+        Ok(self.read_u16(0x01)? & 0x0FFF)
     }
 
     pub fn get_maximum_position(&mut self) -> Result<u16, E> {
-        let mut buffer = [0u8; 2];
-        self.i2c.write_read(self.address, &[0x03], &mut buffer)?;
-        let high_byte = buffer[0] & 0b0000_1111;
-        let low_byte = buffer[1];
-        Ok(u16::from(high_byte) << 8 | u16::from(low_byte))
+        Ok(self.read_u16(0x03)? & 0x0FFF)
     }
 
     pub fn get_maximum_angle(&mut self) -> Result<u16, E> {
+        Ok(self.read_u16(0x05)? & 0x0FFF)
+    }
+
+    fn read_u16(&mut self, command: u8) -> Result<u16, E> {
         let mut buffer = [0u8; 2];
-        self.i2c.write_read(self.address, &[0x05], &mut buffer)?;
-        let high_byte = buffer[0] & 0b0000_1111;
+        self.i2c.write_read(self.address, &[command], &mut buffer)?;
+        let high_byte = buffer[0];
         let low_byte = buffer[1];
         Ok(u16::from(high_byte) << 8 | u16::from(low_byte))
     }
