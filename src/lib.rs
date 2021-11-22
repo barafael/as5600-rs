@@ -60,4 +60,12 @@ where
         let low_byte = buffer[1];
         Ok(u16::from(high_byte) << 8 | u16::from(low_byte))
     }
+
+    pub fn get_maximum_position(&mut self) -> Result<u16, E> {
+        let mut buffer = [0u8; 2];
+        self.i2c.write_read(self.address, &[0x03], &mut buffer)?;
+        let high_byte = buffer[0] & 0b0000_1111;
+        let low_byte = buffer[1];
+        Ok(u16::from(high_byte) << 8 | u16::from(low_byte))
+    }
 }

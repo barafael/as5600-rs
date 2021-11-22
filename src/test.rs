@@ -82,3 +82,23 @@ fn get_zero_position() {
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
+
+#[test]
+fn get_maximum_position() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x03],
+        vec![0b1101_0010, 0b0010_1010],
+    )]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(
+        0b0000_0010_0010_1010,
+        as5600.get_maximum_position().unwrap()
+    );
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
