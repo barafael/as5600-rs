@@ -6,7 +6,6 @@ use crate::{
     status::{self, Status},
     As5600,
 };
-
 use embedded_hal_mock::i2c::{Mock, Transaction};
 
 #[test]

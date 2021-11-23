@@ -3,29 +3,25 @@
 #![cfg_attr(not(test), no_std)]
 
 use configuration::Configuration;
-use core::marker::PhantomData;
 use embedded_hal as hal;
 use error::Error;
 use hal::blocking::i2c;
-use states::Initial;
 
 pub mod configuration;
 pub mod constants;
 pub mod error;
-mod states;
 pub mod status;
 #[cfg(test)]
 mod test;
 
 #[derive(Debug)]
-pub struct As5600<I2C, D, State> {
+pub struct As5600<I2C, D> {
     i2c: I2C,
     address: u8,
     delay: D,
-    state: PhantomData<State>,
 }
 
-impl<I2C, D, E> As5600<I2C, D, Initial>
+impl<I2C, D, E> As5600<I2C, D>
 where
     I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
 {
@@ -34,7 +30,6 @@ where
             i2c,
             address,
             delay,
-            state: PhantomData::<Initial>,
         }
     }
 
