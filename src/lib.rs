@@ -37,6 +37,16 @@ where
         (self.i2c, self.delay)
     }
 
+    pub fn get_raw_angle(&mut self) -> Result<u16, E> {
+        Ok(self.read_u16(0x0c)? & 0x0FFF)
+    }
+
+    pub fn get_angle(&mut self) -> Result<u16, E> {
+        Ok(self.read_u16(0x0e)? & 0x0FFF)
+    }
+
+    /// Get value of register ZMCO.
+    /// This register holds the number of persistent burns to angle and config registers.
     pub fn get_zmco(&mut self) -> Result<u8, E> {
         let mut buffer = [0u8; 1];
         self.i2c.write_read(self.address, &[0x00], &mut buffer)?;
@@ -61,14 +71,24 @@ where
         Ok(self.read_u16(0x05)? & 0x0FFF)
     }
 
+    pub fn get_config(&mut self) -> Result<Configuration, E> {
+        let bytes = self.read_u16(0x07)?;
+        Ok(bytes.into())
+    }
+
     fn read_u16(&mut self, command: u8) -> Result<u16, E> {
         let mut buffer = [0u8; 2];
         self.i2c.write_read(self.address, &[command], &mut buffer)?;
         Ok(u16::from_be_bytes(buffer))
     }
 
-    pub fn get_config(&mut self) -> Result<Configuration, E> {
-        let bytes = self.read_u16(0x07)?;
-        Ok(bytes.into())
+    pub fn get_automatic_gain_control(&mut self) -> Result<u8, E> {
+        let mut buffer = [0u8; 1];
+        self.i2c.write_read(self.address, &[0x1a], &mut buffer)?;
+        Ok(buffer[0])
+    }
+
+    pub fn get_magnitude(&mut self) -> Result<u16, E> {
+        Ok(self.read_u16(0x1b)? & 0x0FFF)
     }
 }

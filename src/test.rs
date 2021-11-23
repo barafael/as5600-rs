@@ -150,4 +150,76 @@ fn get_config() {
     i2c.done();
 }
 
+#[test]
+fn get_raw_angle() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x0c],
+        vec![0b1110_0001, 0b0010_0011],
+    )]);
+
+    let expected_angle = 0x0123;
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(expected_angle, as5600.get_raw_angle().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn get_angle() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x0e],
+        vec![0b1110_1000, 0b0100_0010],
+    )]);
+
+    let expected_angle = 0x0842;
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(expected_angle, as5600.get_angle().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn get_automatic_gain_control() {
+    let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x1a], vec![0b0101_1010])]);
+
+    let expected_agc = 0b0101_1010;
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(expected_agc, as5600.get_automatic_gain_control().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn get_magnitude() {
+    let i2c = Mock::new(&[Transaction::write_read(
+        0x36,
+        vec![0x1b],
+        vec![0b0101_1010, 0b1101_0101],
+    )]);
+
+    let expected_magnitude = 0b0000_1010_1101_0101;
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(expected_magnitude, as5600.get_magnitude().unwrap());
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
 // TODO add proptest for roundtrip conversion of Configuration
