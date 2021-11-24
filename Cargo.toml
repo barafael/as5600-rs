@@ -5,6 +5,7 @@ edition = "2021"
 
 [dev-dependencies]
 embedded-hal-mock = "0.8.0"
+proptest = "1.0.0"
 
 [dependencies]
 embedded-hal = "0.2.6"

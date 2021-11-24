@@ -222,4 +222,15 @@ fn get_magnitude() {
     i2c.done();
 }
 
-// TODO add proptest for roundtrip conversion of Configuration
+use proptest::prelude::*;
+
+proptest! {
+    #[test]
+    fn config_roundtrip(bytes in any::<u16>()) {
+        if let Ok(config) = Configuration::try_from(bytes) {
+            if let Ok(original) = config.try_into() {
+                assert_eq!(bytes, original);
+            }
+        }
+    }
+}

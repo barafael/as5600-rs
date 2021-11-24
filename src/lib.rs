@@ -37,11 +37,11 @@ where
         (self.i2c, self.delay)
     }
 
-    pub fn get_raw_angle(&mut self) -> Result<u16, E> {
+    pub fn get_raw_angle(&mut self) -> Result<u16, Error<E>> {
         Ok(self.read_u16(0x0c)? & 0x0FFF)
     }
 
-    pub fn get_angle(&mut self) -> Result<u16, E> {
+    pub fn get_angle(&mut self) -> Result<u16, Error<E>> {
         Ok(self.read_u16(0x0e)? & 0x0FFF)
     }
 
@@ -59,24 +59,24 @@ where
         status::Status::try_from(buffer).map_err(Error::Status)
     }
 
-    pub fn get_zero_position(&mut self) -> Result<u16, E> {
+    pub fn get_zero_position(&mut self) -> Result<u16, Error<E>> {
         Ok(self.read_u16(0x01)? & 0x0FFF)
     }
 
-    pub fn get_maximum_position(&mut self) -> Result<u16, E> {
+    pub fn get_maximum_position(&mut self) -> Result<u16, Error<E>> {
         Ok(self.read_u16(0x03)? & 0x0FFF)
     }
 
-    pub fn get_maximum_angle(&mut self) -> Result<u16, E> {
+    pub fn get_maximum_angle(&mut self) -> Result<u16, Error<E>> {
         Ok(self.read_u16(0x05)? & 0x0FFF)
     }
 
-    pub fn get_config(&mut self) -> Result<Configuration, E> {
+    pub fn get_config(&mut self) -> Result<Configuration, Error<E>> {
         let bytes = self.read_u16(0x07)?;
-        Ok(bytes.into())
+        configuration::Configuration::try_from(bytes).map_err(Error::Configuration)
     }
 
-    fn read_u16(&mut self, command: u8) -> Result<u16, E> {
+    fn read_u16(&mut self, command: u8) -> Result<u16, Error<E>> {
         let mut buffer = [0u8; 2];
         self.i2c.write_read(self.address, &[command], &mut buffer)?;
         Ok(u16::from_be_bytes(buffer))
@@ -88,7 +88,7 @@ where
         Ok(buffer[0])
     }
 
-    pub fn get_magnitude(&mut self) -> Result<u16, E> {
+    pub fn get_magnitude(&mut self) -> Result<u16, Error<E>> {
         Ok(self.read_u16(0x1b)? & 0x0FFF)
     }
 }
