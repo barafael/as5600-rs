@@ -43,6 +43,12 @@ pub enum PwmFreq {
     PwmF4 = 920,
 }
 
+impl PwmFreq {
+    pub fn to_hz(freq: PwmFreq) -> usize {
+        freq as usize
+    }
+}
+
 #[derive(Debug, PartialEq, Clone)]
 #[cfg_attr(test, derive(Arbitrary))]
 pub enum SlowFilter {
