@@ -221,16 +221,3 @@ fn get_magnitude() {
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
-
-use proptest::prelude::*;
-
-proptest! {
-    #[test]
-    fn config_roundtrip(bytes in any::<u16>()) {
-        if let Ok(config) = Configuration::try_from(bytes) {
-            if let Ok(original) = config.try_into() {
-                assert_eq!(bytes, original);
-            }
-        }
-    }
-}

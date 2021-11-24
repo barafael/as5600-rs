@@ -1,9 +1,13 @@
+#[cfg(test)]
+use proptest_derive::Arbitrary;
+
 #[derive(Debug, PartialEq)]
 pub enum Error {
     OutputStageBitPattern(u8),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum PowerMode {
     Nom,
     Lpm1,
@@ -11,7 +15,8 @@ pub enum PowerMode {
     Lpm3,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum Hysteresis {
     Off,
     Lsb1,
@@ -19,14 +24,16 @@ pub enum Hysteresis {
     Lsb3,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum OutputStage {
     Analog,
     ReducedAnalog,
     DigitalPwm,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum PwmFreq {
     PwmF1 = 115,
     PwmF2 = 230,
@@ -34,7 +41,8 @@ pub enum PwmFreq {
     PwmF4 = 920,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum SlowFilter {
     X16,
     X8,
@@ -42,7 +50,8 @@ pub enum SlowFilter {
     X2,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum FastFilterThreshold {
     SlowFilterOnly,
     Lsb6,
@@ -54,7 +63,8 @@ pub enum FastFilterThreshold {
     Lsb10,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub enum WatchdogState {
     On,
     Off,
@@ -227,7 +237,8 @@ impl From<WatchdogState> for u8 {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub struct Configuration {
     pub power_mode: PowerMode,
     pub hysteresis: Hysteresis,
@@ -279,8 +290,21 @@ impl From<Configuration> for u16 {
         fields |= fth_bits;
         let wd_bits = (u8::from(config.watchdog_state) as u16) << 13;
         fields |= wd_bits;
-        // Restore 3 top-most bits.
-        fields |= config.fields & 0b1110_0000_0000_0000;
+        // Restore 2 top-most bits.
+        fields |= config.fields & 0b1100_0000_0000_0000;
         fields
+    }
+}
+
+impl PartialEq for Configuration {
+    fn eq(&self, other: &Self) -> bool {
+        self.power_mode == other.power_mode
+            && self.hysteresis == other.hysteresis
+            && self.output_stage == other.output_stage
+            && self.pwm_frequency == other.pwm_frequency
+            && self.slow_filter == other.slow_filter
+            && self.fast_filter_threshold == other.fast_filter_threshold
+            && self.watchdog_state == other.watchdog_state
+            && (self.fields & 0b1100_0000_0000_0000) == (other.fields & 0b1100_0000_0000_0000)
     }
 }

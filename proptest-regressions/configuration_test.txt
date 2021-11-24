@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 43ea8fd1015209d5f661797ff2c7364e686160845405031cdf1c926281ff1e49 # shrinks to config = Configuration { power_mode: Nom, hysteresis: Off, output_stage: Analog, pwm_frequency: PwmF1, slow_filter: X16, fast_filter_threshold: SlowFilterOnly, watchdog_state: Off, fields: 40960 }
