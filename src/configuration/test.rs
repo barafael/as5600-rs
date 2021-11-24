@@ -14,7 +14,7 @@ proptest! {
 
     #[test]
     fn configuration(config in any::<Configuration>()) {
-        let bytes = u16::from(config.clone());
+        let bytes = u16::from(config);
         assert_eq!( config, Configuration::try_from(bytes).unwrap());
     }
 }
