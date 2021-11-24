@@ -8,8 +8,6 @@ use error::Error;
 use hal::blocking::i2c;
 
 pub mod configuration;
-#[cfg(test)]
-mod configuration_test;
 pub mod constants;
 pub mod error;
 pub mod status;

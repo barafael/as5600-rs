@@ -1,6 +1,9 @@
 #[cfg(test)]
 use proptest_derive::Arbitrary;
 
+#[cfg(test)]
+mod test;
+
 #[derive(Debug, PartialEq)]
 pub enum Error {
     OutputStageBitPattern(u8),
