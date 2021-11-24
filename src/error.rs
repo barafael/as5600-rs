@@ -4,7 +4,7 @@ use crate::{configuration, status};
 pub enum Error<E> {
     Communication(E),
     Status(status::Error),
-    Configuration(configuration::Error),
+    Configuration(configuration::error::Error),
 }
 
 impl<E> From<E> for Error<E> {
