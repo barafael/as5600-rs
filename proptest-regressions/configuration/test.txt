@@ -1,0 +1,14 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 6447ca2233a8ea7f4664068fa8b6b5c5af8581b503ae0f6a081d9a2f5a9821f9 # shrinks to config = Configuration { power_mode: Nom, hysteresis: Off, output_stage: DigitalPwm, pwm_frequency: PwmF1, slow_filter: X16, fast_filter_threshold: SlowFilterOnly, watchdog_state: On, fields: 0 }
+cc 6b61392074885e14192b1404388d8b17943a1abc51b51c5a4e72dc8cda0c1c5a # shrinks to first = 1900, second = 27624
+cc c3f65e04e2103c17c9bc8bb899aaccc18e25d6cc8b30b7a967da4bb681c83c37 # shrinks to first = 61902, second = 27614
+cc 7447ec31b4e8b444ce1cfc79903556838d13331d542525b65a22f949c8e6d169 # shrinks to first = 3792, second = 52816
+cc fb3722f38f1a259d213636fa5da0741402691ee9d1db9d3e0c126b05aefaa29f # shrinks to first = 39235, second = 18755
+cc c22ac5974884a50c85039dc1f480174a1879fdc8313d8f352ab77be23959a370 # shrinks to first = 32801, second = 49185
+cc f47f38d3050612d9a7eab2df10acf39381781c59eaabcbcdb241233ba80587dc # shrinks to first = 47523, second = 39331
+cc 6a9bf8059e9963c70e872fab7fbb3c20abc9e1ab4287d07da0aaf548870cbedd # shrinks to first = 15813, second = 11717
