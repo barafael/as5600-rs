@@ -24,13 +24,15 @@ fn detects_magnet() {
         Transaction::write_read(0x36, vec![0x0b], vec![0x8]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x40]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x28]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
     ]);
     let expected_status = [
         Ok(Status::MagnetLow),
         Ok(Status::MagnetHigh),
         Ok(Status::MagnetDetected),
-        Err(error::Error::Status(status::Error::InvalidBitPattern(0x40))),
+        Err(error::Error::Status(status::Error::InvalidBitPattern(0))),
+        Err(error::Error::Status(status::Error::InvalidBitPattern(0x28))),
         Ok(Status::MagnetDetected),
     ];
     let delay = embedded_hal_mock::delay::MockNoop;

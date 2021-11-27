@@ -24,7 +24,7 @@ impl TryFrom<u8> for Status {
             0x8 => Ok(Self::MagnetHigh),
             0x10 => Ok(Self::MagnetLow),
             0x20 => Ok(Self::MagnetDetected),
-            _ => Err(Error::InvalidBitPattern(value)),
+            _ => Err(Error::InvalidBitPattern(bits)),
         }
     }
 }
