@@ -42,8 +42,8 @@ pub enum PwmFreq {
 }
 
 impl PwmFreq {
-    pub fn to_hz(freq: &PwmFreq) -> usize {
-        *freq as usize
+    pub const fn to_hz(&self) -> usize {
+        *self as usize
     }
 }
 

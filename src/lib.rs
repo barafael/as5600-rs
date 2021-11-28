@@ -3,13 +3,15 @@
 #![cfg_attr(not(test), no_std)]
 
 use configuration::Configuration;
-use embedded_hal as hal;
+use embedded_hal;
+use embedded_hal::blocking::i2c;
 use error::Error;
-use hal::blocking::i2c;
+use register::Register;
 
 pub mod configuration;
 pub mod constants;
 pub mod error;
+pub(crate) mod register;
 pub mod status;
 #[cfg(test)]
 mod test;
@@ -38,48 +40,44 @@ where
     }
 
     pub fn get_raw_angle(&mut self) -> Result<u16, Error<E>> {
-        Ok(self.read_u16(0x0c)? & 0x0FFF)
+        Ok(self.read_u16(Register::RawAngle.into())? & 0x0FFF)
     }
 
     pub fn get_angle(&mut self) -> Result<u16, Error<E>> {
-        Ok(self.read_u16(0x0e)? & 0x0FFF)
+        Ok(self.read_u16(Register::Angle.into())? & 0x0FFF)
     }
 
     /// Get value of register ZMCO.
     /// This register holds the number of persistent burns to angle and config registers.
     pub fn get_zmco(&mut self) -> Result<u8, E> {
         let mut buffer = [0u8; 1];
-        self.i2c.write_read(self.address, &[0x00], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[Register::Zmco.into()], &mut buffer)?;
         Ok(buffer[0] & 0b0000_0011)
     }
 
     pub fn magnet_status(&mut self) -> Result<status::Status, Error<E>> {
         let mut buffer = [0u8; 1];
-        self.i2c.write_read(self.address, &[0x0b], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[Register::Status.into()], &mut buffer)?;
         status::Status::try_from(buffer).map_err(Error::Status)
     }
 
     pub fn get_zero_position(&mut self) -> Result<u16, Error<E>> {
-        Ok(self.read_u16(0x01)? & 0x0FFF)
+        Ok(self.read_u16(Register::Zpos)? & 0x0FFF)
     }
 
     pub fn get_maximum_position(&mut self) -> Result<u16, Error<E>> {
-        Ok(self.read_u16(0x03)? & 0x0FFF)
+        Ok(self.read_u16(Register::Mpos)? & 0x0FFF)
     }
 
     pub fn get_maximum_angle(&mut self) -> Result<u16, Error<E>> {
-        Ok(self.read_u16(0x05)? & 0x0FFF)
+        Ok(self.read_u16(Register::Mang)? & 0x0FFF)
     }
 
     pub fn get_config(&mut self) -> Result<Configuration, Error<E>> {
-        let bytes = self.read_u16(0x07)?;
+        let bytes = self.read_u16(Register::Conf)?;
         configuration::Configuration::try_from(bytes).map_err(Error::Configuration)
-    }
-
-    fn read_u16(&mut self, command: u8) -> Result<u16, Error<E>> {
-        let mut buffer = [0u8; 2];
-        self.i2c.write_read(self.address, &[command], &mut buffer)?;
-        Ok(u16::from_be_bytes(buffer))
     }
 
     pub fn get_automatic_gain_control(&mut self) -> Result<u8, E> {
@@ -89,6 +87,13 @@ where
     }
 
     pub fn get_magnitude(&mut self) -> Result<u16, Error<E>> {
-        Ok(self.read_u16(0x1b)? & 0x0FFF)
+        Ok(self.read_u16(Register::Magnitude)? & 0x0FFF)
+    }
+
+    fn read_u16(&mut self, command: Register) -> Result<u16, Error<E>> {
+        let mut buffer = [0u8; 2];
+        self.i2c
+            .write_read(self.address, &[command.into()], &mut buffer)?;
+        Ok(u16::from_be_bytes(buffer))
     }
 }

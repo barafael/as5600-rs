@@ -1,15 +1,13 @@
-use proptest::prelude::*;
-
 use crate::configuration::Configuration;
+use proptest::prelude::*;
 
 proptest! {
     #![proptest_config(ProptestConfig::with_cases(10000))]
     #[test]
     fn bytes_to_config_roundtrip(bytes in any::<u16>()) {
         if let Ok(config) = Configuration::try_from(bytes) {
-            if let Ok(original) = config.try_into() {
-                assert_eq!(bytes, original);
-            }
+            let original = u16::from(config);
+            assert_eq!(bytes, original);
         }
     }
 

@@ -195,7 +195,7 @@ impl TryFrom<u16> for Configuration {
 
 impl From<Configuration> for u16 {
     fn from(config: Configuration) -> Self {
-        let mut fields: u16 = 0;
+        let mut fields = 0;
         let power_mode_bits = u8::from(config.power_mode) as u16;
         fields |= power_mode_bits;
         let hyst_bits = (u8::from(config.hysteresis) as u16) << 2;
