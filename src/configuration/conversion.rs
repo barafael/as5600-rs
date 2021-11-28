@@ -1,4 +1,5 @@
 use crate::configuration::error::Error;
+use num_traits::FromPrimitive;
 
 use super::{
     Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq,
@@ -7,13 +8,7 @@ use super::{
 
 impl From<u8> for PowerMode {
     fn from(byte: u8) -> Self {
-        match byte & 0b0000_0011 {
-            0b00 => Self::Nom,
-            0b01 => Self::Lpm1,
-            0b10 => Self::Lpm2,
-            0b11 => Self::Lpm3,
-            _ => unreachable!("Bit pattern above eliminates all other bits"),
-        }
+        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
     }
 }
 
@@ -25,13 +20,7 @@ impl From<PowerMode> for u8 {
 
 impl From<u8> for Hysteresis {
     fn from(byte: u8) -> Self {
-        match byte & 0b0000_0011 {
-            0b00 => Self::Off,
-            0b01 => Self::Lsb1,
-            0b10 => Self::Lsb2,
-            0b11 => Self::Lsb3,
-            _ => unreachable!("Bit pattern above eliminates all other bits"),
-        }
+        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
     }
 }
 
@@ -62,13 +51,7 @@ impl From<OutputStage> for u8 {
 
 impl From<u8> for PwmFreq {
     fn from(byte: u8) -> Self {
-        match byte & 0b0000_0011 {
-            0b00 => Self::PwmF1,
-            0b01 => Self::PwmF2,
-            0b10 => Self::PwmF3,
-            0b11 => Self::PwmF4,
-            _ => unreachable!("Bit pattern above eliminates all other bits"),
-        }
+        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
     }
 }
 
@@ -80,13 +63,7 @@ impl From<PwmFreq> for u8 {
 
 impl From<u8> for SlowFilterMode {
     fn from(byte: u8) -> Self {
-        match byte & 0b0000_0011 {
-            0b00 => Self::X16,
-            0b01 => Self::X8,
-            0b10 => Self::X4,
-            0b11 => Self::X2,
-            _ => unreachable!("Bit pattern above eliminates all other bits"),
-        }
+        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
     }
 }
 
@@ -98,17 +75,7 @@ impl From<SlowFilterMode> for u8 {
 
 impl From<u8> for FastFilterThreshold {
     fn from(byte: u8) -> Self {
-        match byte & 0b0000_0111 {
-            0b000 => Self::SlowFilterOnly,
-            0b001 => Self::Lsb6,
-            0b010 => Self::Lsb7,
-            0b011 => Self::Lsb9,
-            0b100 => Self::Lsb18,
-            0b101 => Self::Lsb21,
-            0b110 => Self::Lsb24,
-            0b111 => Self::Lsb10,
-            _ => unreachable!("Bit pattern above eliminates all other bits"),
-        }
+        FromPrimitive::from_u8(byte & 0b0000_0111).unwrap()
     }
 }
 
@@ -120,11 +87,7 @@ impl From<FastFilterThreshold> for u8 {
 
 impl From<u8> for WatchdogState {
     fn from(byte: u8) -> Self {
-        match byte & 0b0000_0001 {
-            0 => Self::Off,
-            1 => Self::On,
-            _ => unreachable!("Bit pattern above eliminates all other bits"),
-        }
+        FromPrimitive::from_u8(byte & 0b0000_0001).unwrap()
     }
 }
 

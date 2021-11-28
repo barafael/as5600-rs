@@ -10,3 +10,5 @@ proptest-derive = "0.3.0"
 
 [dependencies]
 embedded-hal = "0.2.6"
+num-derive = "0.3.3"
+num-traits = "0.2.14"

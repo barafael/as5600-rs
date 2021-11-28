@@ -1,6 +1,7 @@
 use crate::{
     configuration::{
-        Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilterMode,
+        Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq,
+        SlowFilterMode,
     },
     error,
     status::{self, Status},

@@ -1,3 +1,4 @@
+use num_derive::FromPrimitive;
 #[cfg(test)]
 use proptest_derive::Arbitrary;
 
@@ -8,7 +9,7 @@ pub mod error;
 mod test;
 
 /// Power mode.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum PowerMode {
@@ -23,7 +24,7 @@ pub enum PowerMode {
 }
 
 /// Hysteresis mode.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum Hysteresis {
@@ -52,7 +53,7 @@ pub enum OutputStage {
 }
 
 /// PWM frequency.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum PwmFreq {
@@ -79,7 +80,7 @@ impl PwmFreq {
 }
 
 /// Slow filter mode.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum SlowFilterMode {
@@ -94,7 +95,7 @@ pub enum SlowFilterMode {
 }
 
 /// Fast filter threshold.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum FastFilterThreshold {
@@ -117,7 +118,7 @@ pub enum FastFilterThreshold {
 }
 
 /// Watchdog state.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum WatchdogState {
