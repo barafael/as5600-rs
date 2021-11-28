@@ -1,19 +1,27 @@
 #[cfg(test)]
 use proptest_derive::Arbitrary;
 
+/// Magnet detection status parsing/conversion error.
+#[derive(Debug, PartialEq)]
+pub enum Error {
+    /// Bit pattern not valid for magnet detection status.
+    InvalidBitPattern(u8),
+}
+
+/// Magnet detection status.
 #[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(test, derive(Arbitrary))]
 pub enum Status {
+    /// Magnet too close.
     MagnetHigh,
+    /// Magnet too far.
     MagnetLow,
+    /// Magnet detected.
     MagnetDetected,
+    /// Magnet detected, but close.
     MagnetDetectedHigh,
+    /// Magnet detected, but low.
     MagnetDetectedLow,
-}
-
-#[derive(Debug, PartialEq)]
-pub enum Error {
-    InvalidBitPattern(u8),
 }
 
 impl TryFrom<u8> for Status {
