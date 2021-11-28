@@ -1,8 +1,8 @@
 use crate::configuration::error::Error;
 
 use super::{
-    Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilterMode,
-    WatchdogState,
+    Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq,
+    SlowFilterMode, WatchdogState,
 };
 
 impl From<u8> for PowerMode {
@@ -19,12 +19,7 @@ impl From<u8> for PowerMode {
 
 impl From<PowerMode> for u8 {
     fn from(mode: PowerMode) -> Self {
-        match mode {
-            PowerMode::Nom => 0b00,
-            PowerMode::Lpm1 => 0b01,
-            PowerMode::Lpm2 => 0b10,
-            PowerMode::Lpm3 => 0b11,
-        }
+        mode as u8
     }
 }
 
@@ -42,12 +37,7 @@ impl From<u8> for Hysteresis {
 
 impl From<Hysteresis> for u8 {
     fn from(hyst: Hysteresis) -> Self {
-        match hyst {
-            Hysteresis::Off => 0b00,
-            Hysteresis::Lsb1 => 0b01,
-            Hysteresis::Lsb2 => 0b10,
-            Hysteresis::Lsb3 => 0b11,
-        }
+        hyst as u8
     }
 }
 
@@ -66,11 +56,7 @@ impl TryFrom<u8> for OutputStage {
 
 impl From<OutputStage> for u8 {
     fn from(stage: OutputStage) -> Self {
-        match stage {
-            OutputStage::Analog => 0b00,
-            OutputStage::ReducedAnalog => 0b01,
-            OutputStage::DigitalPwm => 0b10,
-        }
+        stage as u8
     }
 }
 
@@ -88,12 +74,7 @@ impl From<u8> for PwmFreq {
 
 impl From<PwmFreq> for u8 {
     fn from(freq: PwmFreq) -> Self {
-        match freq {
-            PwmFreq::PwmF1 => 0b00,
-            PwmFreq::PwmF2 => 0b01,
-            PwmFreq::PwmF3 => 0b10,
-            PwmFreq::PwmF4 => 0b11,
-        }
+        freq as u8
     }
 }
 
@@ -111,12 +92,7 @@ impl From<u8> for SlowFilterMode {
 
 impl From<SlowFilterMode> for u8 {
     fn from(filter: SlowFilterMode) -> Self {
-        match filter {
-            SlowFilterMode::X16 => 0b00,
-            SlowFilterMode::X8 => 0b01,
-            SlowFilterMode::X4 => 0b10,
-            SlowFilterMode::X2 => 0b11,
-        }
+        filter as u8
     }
 }
 
@@ -138,16 +114,7 @@ impl From<u8> for FastFilterThreshold {
 
 impl From<FastFilterThreshold> for u8 {
     fn from(fth: FastFilterThreshold) -> Self {
-        match fth {
-            FastFilterThreshold::SlowFilterOnly => 0b000,
-            FastFilterThreshold::Lsb6 => 0b001,
-            FastFilterThreshold::Lsb7 => 0b010,
-            FastFilterThreshold::Lsb9 => 0b011,
-            FastFilterThreshold::Lsb18 => 0b100,
-            FastFilterThreshold::Lsb21 => 0b101,
-            FastFilterThreshold::Lsb24 => 0b110,
-            FastFilterThreshold::Lsb10 => 0b111,
-        }
+        fth as u8
     }
 }
 
@@ -163,10 +130,7 @@ impl From<u8> for WatchdogState {
 
 impl From<WatchdogState> for u8 {
     fn from(state: WatchdogState) -> Self {
-        match state {
-            WatchdogState::Off => 0,
-            WatchdogState::On => 1,
-        }
+        state as u8
     }
 }
 
