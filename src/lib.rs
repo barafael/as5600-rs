@@ -5,7 +5,6 @@
 //! Platform-agnostic Rust driver for the AS5600 digital magnetic potentiometer.
 
 use configuration::Configuration;
-use embedded_hal;
 use embedded_hal::blocking::i2c;
 use error::Error;
 use register::Register;
@@ -53,14 +52,14 @@ where
     /// This register holds the unfiltered unprocessed value of the measured angle.
     pub fn get_raw_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
-        Ok(self.read_u16(Register::RawAngle.into())? & 0x0FFF)
+        Ok(self.read_u16(Register::RawAngle)? & 0x0FFF)
     }
 
     /// Get value of register ANGLE.
     /// This register holds the filtered value of the measured angle.
     pub fn get_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
-        Ok(self.read_u16(Register::Angle.into())? & 0x0FFF)
+        Ok(self.read_u16(Register::Angle)? & 0x0FFF)
     }
 
     /// Get value of register ZMCO.
