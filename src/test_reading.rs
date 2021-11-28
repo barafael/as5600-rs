@@ -1,7 +1,7 @@
 use crate::{
     configuration::{
         Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq,
-        SlowFilterMode,
+        SlowFilterMode, WatchdogState,
     },
     error,
     status::{self, Status},
@@ -148,8 +148,7 @@ fn get_config() {
         pwm_frequency: PwmFreq::PwmF3,
         slow_filter: SlowFilterMode::X2,
         fast_filter_threshold: FastFilterThreshold::SlowFilterOnly,
-        watchdog_state: crate::configuration::WatchdogState::On,
-        fields: 0b1110_0011_1010_1100,
+        watchdog_state: WatchdogState::On,
     };
 
     let delay = embedded_hal_mock::delay::MockNoop;

@@ -122,8 +122,11 @@ where
 
     /// Set value of register `CONF`.
     pub fn set_config(&mut self, config: Configuration) -> Result<(), Error<E>> {
-        // TODO to preserve top-most 2 bits, the proper thing to do would be to read them here.
-        let bytes = u16::from(config);
+        // See note in datasheet about "blank fields may contain factory settings" on page 18.
+        let current_config = self.read_u16(Register::Conf)?;
+        let blank_fields = current_config & 0b1100_0000_0000_0000;
+        let mut bytes = u16::from(config);
+        bytes |= blank_fields;
         self.write_u16(Register::Conf, bytes)
     }
 

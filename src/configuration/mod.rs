@@ -129,7 +129,7 @@ pub enum WatchdogState {
 }
 
 /// As5600 configuration.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(test, derive(Arbitrary))]
 pub struct Configuration {
     /// Power mode.
@@ -146,19 +146,4 @@ pub struct Configuration {
     pub fast_filter_threshold: FastFilterThreshold,
     /// Watchdog state.
     pub watchdog_state: WatchdogState,
-    /// Fields for restoring top-most 2 bits on write.
-    pub fields: u16, // See note in datasheet about "blank fields may contain factory settings" on page 18. TODO treat like any other 2-bit field.
-}
-
-impl PartialEq for Configuration {
-    fn eq(&self, other: &Self) -> bool {
-        self.power_mode == other.power_mode
-            && self.hysteresis == other.hysteresis
-            && self.output_stage == other.output_stage
-            && self.pwm_frequency == other.pwm_frequency
-            && self.slow_filter == other.slow_filter
-            && self.fast_filter_threshold == other.fast_filter_threshold
-            && self.watchdog_state == other.watchdog_state
-            && (self.fields & 0b1100_0000_0000_0000) == (other.fields & 0b1100_0000_0000_0000)
-    }
 }

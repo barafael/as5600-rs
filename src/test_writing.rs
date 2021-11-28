@@ -1,7 +1,7 @@
 use crate::{
     configuration::{
         Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq,
-        SlowFilterMode,
+        SlowFilterMode, WatchdogState,
     },
     As5600,
 };
@@ -76,15 +76,15 @@ fn set_config() {
         pwm_frequency: PwmFreq::PwmF2,
         slow_filter: SlowFilterMode::X2,
         fast_filter_threshold: FastFilterThreshold::Lsb21,
-        watchdog_state: crate::configuration::WatchdogState::On,
-        fields: 0b1100_0000_0000_0000,
+        watchdog_state: WatchdogState::On,
     };
     let config_bytes: [u8; 2] = u16::from(config).to_be_bytes();
+    let top_most_set = config_bytes[0] | 0b1000_0000;
 
-    let i2c = Mock::new(&[Transaction::write(
-        0x36,
-        vec![0x07, config_bytes[0], config_bytes[1]],
-    )]);
+    let i2c = Mock::new(&[
+        Transaction::write_read(0x36, vec![0x07], vec![top_most_set, config_bytes[1]]),
+        Transaction::write(0x36, vec![0x07, top_most_set, config_bytes[1]]),
+    ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);

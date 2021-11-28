@@ -122,7 +122,6 @@ impl TryFrom<u16> for Configuration {
             slow_filter: sf.try_into()?,
             fast_filter_threshold: fth.try_into()?,
             watchdog_state: wd.try_into()?,
-            fields: bytes,
         })
     }
 }
@@ -144,8 +143,6 @@ impl From<Configuration> for u16 {
         fields |= fth_bits;
         let wd_bits = (u8::from(config.watchdog_state) as Self) << 13;
         fields |= wd_bits;
-        // Restore 2 top-most bits.
-        fields |= config.fields & 0b1100_0000_0000_0000;
         fields
     }
 }
