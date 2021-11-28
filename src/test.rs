@@ -1,6 +1,6 @@
 use crate::{
     configuration::{
-        Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilter,
+        Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilterMode,
     },
     error,
     status::{self, Status},
@@ -145,7 +145,7 @@ fn get_config() {
         hysteresis: Hysteresis::Lsb3,
         output_stage: OutputStage::DigitalPwm,
         pwm_frequency: PwmFreq::PwmF3,
-        slow_filter: SlowFilter::X2,
+        slow_filter: SlowFilterMode::X2,
         fast_filter_threshold: FastFilterThreshold::SlowFilterOnly,
         watchdog_state: crate::configuration::WatchdogState::On,
         fields: 0b1110_0011_1010_1100,

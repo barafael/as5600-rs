@@ -49,7 +49,7 @@ impl PwmFreq {
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 #[cfg_attr(test, derive(Arbitrary))]
-pub enum SlowFilter {
+pub enum SlowFilterMode {
     X16,
     X8,
     X4,
@@ -83,7 +83,7 @@ pub struct Configuration {
     pub hysteresis: Hysteresis,
     pub output_stage: OutputStage,
     pub pwm_frequency: PwmFreq,
-    pub slow_filter: SlowFilter,
+    pub slow_filter: SlowFilterMode,
     pub fast_filter_threshold: FastFilterThreshold,
     pub watchdog_state: WatchdogState,
     pub fields: u16, // See note in datasheet about "blank fields may contain factory settings" on page 18

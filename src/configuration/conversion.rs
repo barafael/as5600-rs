@@ -1,7 +1,7 @@
 use crate::configuration::error::Error;
 
 use super::{
-    Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilter,
+    Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq, SlowFilterMode,
     WatchdogState,
 };
 
@@ -97,7 +97,7 @@ impl From<PwmFreq> for u8 {
     }
 }
 
-impl From<u8> for SlowFilter {
+impl From<u8> for SlowFilterMode {
     fn from(byte: u8) -> Self {
         match byte & 0b0000_0011 {
             0b00 => Self::X16,
@@ -109,13 +109,13 @@ impl From<u8> for SlowFilter {
     }
 }
 
-impl From<SlowFilter> for u8 {
-    fn from(filter: SlowFilter) -> Self {
+impl From<SlowFilterMode> for u8 {
+    fn from(filter: SlowFilterMode) -> Self {
         match filter {
-            SlowFilter::X16 => 0b00,
-            SlowFilter::X8 => 0b01,
-            SlowFilter::X4 => 0b10,
-            SlowFilter::X2 => 0b11,
+            SlowFilterMode::X16 => 0b00,
+            SlowFilterMode::X8 => 0b01,
+            SlowFilterMode::X4 => 0b10,
+            SlowFilterMode::X2 => 0b11,
         }
     }
 }
