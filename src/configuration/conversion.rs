@@ -6,9 +6,10 @@ use super::{
     SlowFilterMode, WatchdogState,
 };
 
-impl From<u8> for PowerMode {
-    fn from(byte: u8) -> Self {
-        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
+impl TryFrom<u8> for PowerMode {
+    type Error = Error;
+    fn try_from(byte: u8) -> Result<Self, Self::Error> {
+        FromPrimitive::from_u8(byte /* & 0b0000_0011*/).ok_or(Error::PowerModeBitPattern(byte))
     }
 }
 
@@ -18,9 +19,10 @@ impl From<PowerMode> for u8 {
     }
 }
 
-impl From<u8> for Hysteresis {
-    fn from(byte: u8) -> Self {
-        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
+impl TryFrom<u8> for Hysteresis {
+    type Error = Error;
+    fn try_from(byte: u8) -> Result<Self, Self::Error> {
+        FromPrimitive::from_u8(byte /* & 0b0000_0011*/).ok_or(Error::HysteresisBitPattern(byte))
     }
 }
 
@@ -49,9 +51,10 @@ impl From<OutputStage> for u8 {
     }
 }
 
-impl From<u8> for PwmFreq {
-    fn from(byte: u8) -> Self {
-        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
+impl TryFrom<u8> for PwmFreq {
+    type Error = Error;
+    fn try_from(byte: u8) -> Result<Self, Self::Error> {
+        FromPrimitive::from_u8(byte /* & 0b0000_0011*/).ok_or(Error::PwmFreqBitPattern(byte))
     }
 }
 
@@ -61,9 +64,10 @@ impl From<PwmFreq> for u8 {
     }
 }
 
-impl From<u8> for SlowFilterMode {
-    fn from(byte: u8) -> Self {
-        FromPrimitive::from_u8(byte & 0b0000_0011).unwrap()
+impl TryFrom<u8> for SlowFilterMode {
+    type Error = Error;
+    fn try_from(byte: u8) -> Result<Self, Self::Error> {
+        FromPrimitive::from_u8(byte /*& 0b0000_0011*/).ok_or(Error::SlowFilterModeBitPattern(byte))
     }
 }
 
@@ -73,9 +77,11 @@ impl From<SlowFilterMode> for u8 {
     }
 }
 
-impl From<u8> for FastFilterThreshold {
-    fn from(byte: u8) -> Self {
-        FromPrimitive::from_u8(byte & 0b0000_0111).unwrap()
+impl TryFrom<u8> for FastFilterThreshold {
+    type Error = Error;
+    fn try_from(byte: u8) -> Result<Self, Self::Error> {
+        FromPrimitive::from_u8(byte /*& 0b0000_0111*/)
+            .ok_or(Error::FastFilterThresholdBitPattern(byte))
     }
 }
 
@@ -85,9 +91,10 @@ impl From<FastFilterThreshold> for u8 {
     }
 }
 
-impl From<u8> for WatchdogState {
-    fn from(byte: u8) -> Self {
-        FromPrimitive::from_u8(byte & 0b0000_0001).unwrap()
+impl TryFrom<u8> for WatchdogState {
+    type Error = Error;
+    fn try_from(byte: u8) -> Result<Self, Self::Error> {
+        FromPrimitive::from_u8(byte /*& 0b0000_0001*/).ok_or(Error::WatchdogState(byte))
     }
 }
 
@@ -108,13 +115,13 @@ impl TryFrom<u16> for Configuration {
         let fth = ((bytes & 0b0001_1100_0000_0000) >> 10) as u8;
         let wd = ((bytes & 0b0010_0000_0000_0000) >> 13) as u8;
         Ok(Self {
-            power_mode: pm.into(),
-            hysteresis: hyst.into(),
+            power_mode: pm.try_into()?,
+            hysteresis: hyst.try_into()?,
             output_stage: outs.try_into()?,
-            pwm_frequency: pwmf.into(),
-            slow_filter: sf.into(),
-            fast_filter_threshold: fth.into(),
-            watchdog_state: wd.into(),
+            pwm_frequency: pwmf.try_into()?,
+            slow_filter: sf.try_into()?,
+            fast_filter_threshold: fth.try_into()?,
+            watchdog_state: wd.try_into()?,
             fields: bytes,
         })
     }
