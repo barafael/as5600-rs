@@ -22,17 +22,25 @@ fn detects_magnet() {
     let i2c = Mock::new(&[
         Transaction::write_read(0x36, vec![0x0b], vec![0x10]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x8]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x28]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x40]),
-        Transaction::write_read(0x36, vec![0x0b], vec![0x28]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x18]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x30]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x38]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
     ]);
     let expected_status = [
         Ok(Status::MagnetLow),
         Ok(Status::MagnetHigh),
+        Ok(Status::MagnetDetectedHigh),
         Ok(Status::MagnetDetected),
         Err(error::Error::Status(status::Error::InvalidBitPattern(0))),
-        Err(error::Error::Status(status::Error::InvalidBitPattern(0x28))),
+        Err(error::Error::Status(status::Error::InvalidBitPattern(0x18))),
+        Ok(Status::MagnetDetected),
+        Ok(Status::MagnetDetectedLow),
+        Err(error::Error::Status(status::Error::InvalidBitPattern(0x38))),
         Ok(Status::MagnetDetected),
     ];
     let delay = embedded_hal_mock::delay::MockNoop;

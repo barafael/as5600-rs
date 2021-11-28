@@ -7,6 +7,8 @@ pub enum Status {
     MagnetHigh,
     MagnetLow,
     MagnetDetected,
+    MagnetDetectedHigh,
+    MagnetDetectedLow,
 }
 
 #[derive(Debug, PartialEq)]
@@ -24,6 +26,8 @@ impl TryFrom<u8> for Status {
             0x8 => Ok(Self::MagnetHigh),
             0x10 => Ok(Self::MagnetLow),
             0x20 => Ok(Self::MagnetDetected),
+            0x30 => Ok(Self::MagnetDetectedLow),
+            0x28 => Ok(Self::MagnetDetectedHigh),
             _ => Err(Error::InvalidBitPattern(bits)),
         }
     }
@@ -43,6 +47,8 @@ impl From<Status> for u8 {
             Status::MagnetHigh => 0x8,
             Status::MagnetLow => 0x10,
             Status::MagnetDetected => 0x20,
+            Status::MagnetDetectedHigh => 0x28,
+            Status::MagnetDetectedLow => 0x30,
         }
     }
 }

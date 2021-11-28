@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 50899b3e8a016e644067ee1887e5884274d45e3c4ef768d705a325cda67333d4 # shrinks to status = MagnetDetectedLow
