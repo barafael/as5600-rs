@@ -48,21 +48,21 @@ where
         (self.i2c, self.delay)
     }
 
-    /// Get value of register RAW_ANGLE.
+    /// Get value of register `RAW_ANGLE`.
     /// This register holds the unfiltered unprocessed value of the measured angle.
     pub fn get_raw_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::RawAngle)? & 0x0FFF)
     }
 
-    /// Get value of register ANGLE.
+    /// Get value of register `ANGLE`.
     /// This register holds the filtered value of the measured angle.
     pub fn get_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Angle)? & 0x0FFF)
     }
 
-    /// Get value of register ZMCO.
+    /// Get value of register `ZMCO`.
     /// This register holds the number of persistent burns to angle and config registers.
     pub fn get_zmco(&mut self) -> Result<u8, E> {
         let mut buffer = [0u8; 1];
@@ -71,7 +71,7 @@ where
         Ok(buffer[0] & 0b0000_0011)
     }
 
-    /// Get value of register STATUS.
+    /// Get value of register `STATUS`.
     /// This register indicates whether a magnet is detected, or too low, or too high.
     pub fn magnet_status(&mut self) -> Result<status::Status, Error<E>> {
         let mut buffer = [0u8; 1];
@@ -80,35 +80,35 @@ where
         status::Status::try_from(buffer).map_err(Error::Status)
     }
 
-    /// Get value of register ZPOS.
+    /// Get value of register `ZPOS`.
     /// This register holds the value of the programmed zero-position.
     pub fn get_zero_position(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Zpos)? & 0x0FFF)
     }
 
-    /// Get value of register MPOS.
+    /// Get value of register `MPOS`.
     /// This register holds the value of the programmed maximum position.
     pub fn get_maximum_position(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Mpos)? & 0x0FFF)
     }
 
-    /// Get value of register MANG.
+    /// Get value of register `MANG`.
     /// This register holds the value of the programmed maximum angle.
     pub fn get_maximum_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Mang)? & 0x0FFF)
     }
 
-    /// Get value of register CONF and parse it.
+    /// Get value of register `CONF` and parse it.
     /// This register holds R/W/P bitfields of the current configuration.
     pub fn get_config(&mut self) -> Result<Configuration, Error<E>> {
         let bytes = self.read_u16(Register::Conf)?;
         configuration::Configuration::try_from(bytes).map_err(Error::Configuration)
     }
 
-    /// Get value of register AGC.
+    /// Get value of register `AGC`.
     /// This register holds the current automatic gain control value.
     /// This value is different depending on the supply voltage (5V or 3v3), see datasheet.
     pub fn get_automatic_gain_control(&mut self) -> Result<u8, E> {
@@ -117,7 +117,7 @@ where
         Ok(buffer[0])
     }
 
-    /// Get value of register MAGNITUDE.
+    /// Get value of register `MAGNITUDE`.
     /// This value holds the measured magnitude of the applied magnetic field.
     pub fn get_magnitude(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.

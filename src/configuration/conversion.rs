@@ -14,7 +14,7 @@ impl From<u8> for PowerMode {
 
 impl From<PowerMode> for u8 {
     fn from(mode: PowerMode) -> Self {
-        mode as u8
+        mode as Self
     }
 }
 
@@ -26,7 +26,7 @@ impl From<u8> for Hysteresis {
 
 impl From<Hysteresis> for u8 {
     fn from(hyst: Hysteresis) -> Self {
-        hyst as u8
+        hyst as Self
     }
 }
 
@@ -45,7 +45,7 @@ impl TryFrom<u8> for OutputStage {
 
 impl From<OutputStage> for u8 {
     fn from(stage: OutputStage) -> Self {
-        stage as u8
+        stage as Self
     }
 }
 
@@ -57,7 +57,7 @@ impl From<u8> for PwmFreq {
 
 impl From<PwmFreq> for u8 {
     fn from(freq: PwmFreq) -> Self {
-        freq as u8
+        freq as Self
     }
 }
 
@@ -69,7 +69,7 @@ impl From<u8> for SlowFilterMode {
 
 impl From<SlowFilterMode> for u8 {
     fn from(filter: SlowFilterMode) -> Self {
-        filter as u8
+        filter as Self
     }
 }
 
@@ -81,7 +81,7 @@ impl From<u8> for FastFilterThreshold {
 
 impl From<FastFilterThreshold> for u8 {
     fn from(fth: FastFilterThreshold) -> Self {
-        fth as u8
+        fth as Self
     }
 }
 
@@ -93,7 +93,7 @@ impl From<u8> for WatchdogState {
 
 impl From<WatchdogState> for u8 {
     fn from(state: WatchdogState) -> Self {
-        state as u8
+        state as Self
     }
 }
 
@@ -123,19 +123,19 @@ impl TryFrom<u16> for Configuration {
 impl From<Configuration> for u16 {
     fn from(config: Configuration) -> Self {
         let mut fields = 0;
-        let power_mode_bits = u8::from(config.power_mode) as u16;
+        let power_mode_bits = u8::from(config.power_mode) as Self;
         fields |= power_mode_bits;
-        let hyst_bits = (u8::from(config.hysteresis) as u16) << 2;
+        let hyst_bits = (u8::from(config.hysteresis) as Self) << 2;
         fields |= hyst_bits;
-        let outs_bits = (u8::from(config.output_stage) as u16) << 4;
+        let outs_bits = (u8::from(config.output_stage) as Self) << 4;
         fields |= outs_bits;
-        let pwmf_bits = (u8::from(config.pwm_frequency) as u16) << 6;
+        let pwmf_bits = (u8::from(config.pwm_frequency) as Self) << 6;
         fields |= pwmf_bits;
-        let sf_bits = (u8::from(config.slow_filter) as u16) << 8;
+        let sf_bits = (u8::from(config.slow_filter) as Self) << 8;
         fields |= sf_bits;
-        let fth_bits = (u8::from(config.fast_filter_threshold) as u16) << 10;
+        let fth_bits = (u8::from(config.fast_filter_threshold) as Self) << 10;
         fields |= fth_bits;
-        let wd_bits = (u8::from(config.watchdog_state) as u16) << 13;
+        let wd_bits = (u8::from(config.watchdog_state) as Self) << 13;
         fields |= wd_bits;
         // Restore 2 top-most bits.
         fields |= config.fields & 0b1100_0000_0000_0000;

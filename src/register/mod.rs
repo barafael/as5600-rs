@@ -22,7 +22,7 @@ pub enum Register {
 
 impl From<Register> for u8 {
     fn from(reg: Register) -> Self {
-        reg as u8
+        reg as Self
     }
 }
 
@@ -30,17 +30,17 @@ impl TryFrom<u8> for Register {
     type Error = error::Error;
     fn try_from(byte: u8) -> Result<Self, Self::Error> {
         match byte {
-            0x00 => Ok(Register::Zmco),
-            0x01 => Ok(Register::Zpos),
-            0x03 => Ok(Register::Mpos),
-            0x05 => Ok(Register::Mang),
-            0x07 => Ok(Register::Conf),
-            0x0C => Ok(Register::RawAngle),
-            0x0E => Ok(Register::Angle),
-            0x0B => Ok(Register::Status),
-            0x1A => Ok(Register::Agc),
-            0x1B => Ok(Register::Magnitude),
-            0xFF => Ok(Register::Burn),
+            0x00 => Ok(Self::Zmco),
+            0x01 => Ok(Self::Zpos),
+            0x03 => Ok(Self::Mpos),
+            0x05 => Ok(Self::Mang),
+            0x07 => Ok(Self::Conf),
+            0x0C => Ok(Self::RawAngle),
+            0x0E => Ok(Self::Angle),
+            0x0B => Ok(Self::Status),
+            0x1A => Ok(Self::Agc),
+            0x1B => Ok(Self::Magnitude),
+            0xFF => Ok(Self::Burn),
             _ => Err(error::Error::Register(byte)),
         }
     }
