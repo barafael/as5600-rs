@@ -37,7 +37,7 @@ fn detects_magnet() {
         Ok(Status::MagnetHigh),
         Ok(Status::MagnetDetectedHigh),
         Ok(Status::MagnetDetected),
-        Err(error::Error::Status(status::Error::InvalidBitPattern(0))),
+        Err(error::Error::Status(status::Error::InvalidBitPattern(0x40))),
         Err(error::Error::Status(status::Error::InvalidBitPattern(0x18))),
         Ok(Status::MagnetDetected),
         Ok(Status::MagnetDetectedLow),

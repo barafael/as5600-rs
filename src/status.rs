@@ -1,3 +1,6 @@
+use num_derive::FromPrimitive;
+use num_traits::FromPrimitive;
+
 #[cfg(test)]
 use proptest_derive::Arbitrary;
 
@@ -9,19 +12,20 @@ pub enum Error {
 }
 
 /// Magnet detection status.
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
+#[repr(u8)]
 pub enum Status {
     /// Magnet too close.
-    MagnetHigh,
+    MagnetHigh = 0x8,
     /// Magnet too far.
-    MagnetLow,
+    MagnetLow = 0x10,
     /// Magnet detected.
-    MagnetDetected,
+    MagnetDetected = 0x20,
     /// Magnet detected, but close.
-    MagnetDetectedHigh,
+    MagnetDetectedHigh = 0x28,
     /// Magnet detected, but low.
-    MagnetDetectedLow,
+    MagnetDetectedLow = 0x30,
 }
 
 impl TryFrom<u8> for Status {
@@ -29,15 +33,7 @@ impl TryFrom<u8> for Status {
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         // See datasheet Fig. 21, section "Status Registers".
-        let bits = value & 0b0011_1000;
-        match bits {
-            0x8 => Ok(Self::MagnetHigh),
-            0x10 => Ok(Self::MagnetLow),
-            0x20 => Ok(Self::MagnetDetected),
-            0x30 => Ok(Self::MagnetDetectedLow),
-            0x28 => Ok(Self::MagnetDetectedHigh),
-            _ => Err(Error::InvalidBitPattern(bits)),
-        }
+        FromPrimitive::from_u8(value & 0b0011_1000).ok_or(Error::InvalidBitPattern(value))
     }
 }
 
@@ -51,13 +47,7 @@ impl TryFrom<[u8; 1]> for Status {
 
 impl From<Status> for u8 {
     fn from(status: Status) -> Self {
-        match status {
-            Status::MagnetHigh => 0x8,
-            Status::MagnetLow => 0x10,
-            Status::MagnetDetected => 0x20,
-            Status::MagnetDetectedHigh => 0x28,
-            Status::MagnetDetectedLow => 0x30,
-        }
+        status as u8
     }
 }
 
