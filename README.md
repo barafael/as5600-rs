@@ -6,4 +6,4 @@ Rust Embedded HAL driver for the AS5600 contactless 12-bit digital potentiometer
 - [x] Reading/parsing all device registers
 - [x] Writing configuration settings
 - [x] Setting zero position, maximum position, maximum angle
-- [ ] Burn Settings and angle
+- [x] Burn Settings and angle

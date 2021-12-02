@@ -5,9 +5,11 @@
 //! Platform-agnostic Rust driver for the AS5600 digital magnetic potentiometer.
 
 use configuration::Configuration;
+use embedded_hal::blocking::delay::DelayMs;
 use embedded_hal::blocking::i2c;
 use error::Error;
 use register::Register;
+use status::Status;
 
 /// Configuration of As5600.
 pub mod configuration;
@@ -35,6 +37,7 @@ pub struct As5600<I2C, D> {
 impl<I2C, D, E> As5600<I2C, D>
 where
     I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+    D: DelayMs<u32>,
 {
     /// Create a new As5600 driver instance.
     pub fn new(i2c: I2C, address: u8, delay: D) -> Self {
@@ -63,7 +66,7 @@ where
     }
 
     /// Get value of register `ZMCO`.
-    pub fn get_zmco(&mut self) -> Result<u8, E> {
+    pub fn get_zmco(&mut self) -> Result<u8, Error<E>> {
         let mut buffer = [0u8; 1];
         self.i2c
             .write_read(self.address, &[Register::Zmco.into()], &mut buffer)?;
@@ -132,7 +135,7 @@ where
 
     /// Get value of register `AGC`.
     /// This value differs depending on the supply voltage (5V or 3v3), see datasheet.
-    pub fn get_automatic_gain_control(&mut self) -> Result<u8, E> {
+    pub fn get_automatic_gain_control(&mut self) -> Result<u8, Error<E>> {
         let mut buffer = [0u8; 1];
         self.i2c.write_read(self.address, &[0x1a], &mut buffer)?;
         Ok(buffer[0])
@@ -142,6 +145,37 @@ where
     pub fn get_magnitude(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Magnitude)? & 0x0FFF)
+    }
+
+    /// Burn maximum angle and config register.
+    /// Only proceeds if position settings (MPOS and ZPOS) have never been persisted before.
+    /// See datasheet for constraints.
+    pub fn persist_maximum_angle_and_config_settings(&mut self) -> Result<(), Error<E>> {
+        let zmco = self.get_zmco()?;
+        if zmco != 0 {
+            return Err(Error::MangConfigPersistenceExhausted);
+        }
+        self.i2c
+            .write(self.address, &[Register::Burn.into(), 0x40])?;
+        self.delay.delay_ms(1);
+        Ok(())
+    }
+
+    /// Burn zero position and maximum to As5600 memory, if ZMCO permits it and a magnet is detected.
+    /// See datasheet for constraints.
+    pub fn persist_position_settings(&mut self) -> Result<(), Error<E>> {
+        let zmco = self.get_zmco()?;
+        if zmco >= 3 {
+            return Err(Error::MaximumPositionPersistsReached);
+        }
+        if self.magnet_status()? != Status::MagnetDetected {
+            return Err(Error::MagnetRequired);
+        }
+        self.i2c
+            .write(self.address, &[Register::Burn.into(), 0x80])
+            .map_err(Error::Communication)?;
+        self.delay.delay_ms(1);
+        Ok(())
     }
 
     /// Helper function for write-reading 2 bytes from the given register.

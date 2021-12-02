@@ -3,6 +3,7 @@ use crate::{
         Configuration, FastFilterThreshold, Hysteresis, OutputStage, PowerMode, PwmFreq,
         SlowFilterMode, WatchdogState,
     },
+    error::Error,
     As5600,
 };
 use embedded_hal_mock::i2c::{Mock, Transaction};
@@ -90,6 +91,92 @@ fn set_config() {
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
     as5600.set_config(config).unwrap();
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn burn_angle_succeeds() {
+    let i2c = Mock::new(&[
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
+        Transaction::write(0x36, vec![0xFF, 0x80]),
+    ]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    as5600.persist_position_settings().unwrap();
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn burn_angle_fails_due_to_zmco() {
+    let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0011])]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(
+        as5600.persist_position_settings().unwrap_err(),
+        Error::MaximumPositionPersistsReached
+    );
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn burn_angle_fails_due_to_magnet_detection() {
+    let i2c = Mock::new(&[
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
+        Transaction::write_read(0x36, vec![0x0b], vec![0x10]),
+    ]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(
+        as5600.persist_position_settings().unwrap_err(),
+        Error::MagnetRequired
+    );
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn burn_settings_succeeds() {
+    let i2c = Mock::new(&[
+        Transaction::write_read(0x36, vec![0x00], vec![0b0000_0000]),
+        Transaction::write(0x36, vec![0xFF, 0x40]),
+    ]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    as5600.persist_maximum_angle_and_config_settings().unwrap();
+
+    let (mut i2c, _delay) = as5600.release();
+    i2c.done();
+}
+
+#[test]
+fn burn_settings_fails_when_zmco_is_not_zero() {
+    let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001])]);
+
+    let delay = embedded_hal_mock::delay::MockNoop;
+    let mut as5600 = As5600::new(i2c, 0x36, delay);
+
+    assert_eq!(
+        as5600
+            .persist_maximum_angle_and_config_settings()
+            .unwrap_err(),
+        Error::MangConfigPersistenceExhausted
+    );
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();

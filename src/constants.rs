@@ -19,6 +19,3 @@ pub const SETTLING_TIME_2: Duration = Duration::from_micros(1100);
 pub const SETTLING_TIME_3: Duration = Duration::from_micros(550);
 /// Settling time 4.
 pub const SETTLING_TIME_4: Duration = Duration::from_micros(286);
-
-/// Time to take after burning settings.
-pub const APPLY_SETTINGS: Duration = Duration::from_millis(1);
