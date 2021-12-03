@@ -54,19 +54,19 @@ where
     }
 
     /// Get value of register `RAW_ANGLE`.
-    pub fn get_raw_angle(&mut self) -> Result<u16, Error<E>> {
+    pub fn raw_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::RawAngle)? & 0x0FFF)
     }
 
     /// Get value of register `ANGLE`.
-    pub fn get_angle(&mut self) -> Result<u16, Error<E>> {
+    pub fn angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Angle)? & 0x0FFF)
     }
 
     /// Get value of register `ZMCO`.
-    pub fn get_zmco(&mut self) -> Result<u8, Error<E>> {
+    pub fn zmco(&mut self) -> Result<u8, Error<E>> {
         let mut buffer = [0u8; 1];
         self.i2c
             .write_read(self.address, &[Register::Zmco.into()], &mut buffer)?;
@@ -82,7 +82,7 @@ where
     }
 
     /// Get value of register `ZPOS`.
-    pub fn get_zero_position(&mut self) -> Result<u16, Error<E>> {
+    pub fn zero_position(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Zpos)? & 0x0FFF)
     }
@@ -94,7 +94,7 @@ where
     }
 
     /// Get value of register `MPOS`.
-    pub fn get_maximum_position(&mut self) -> Result<u16, Error<E>> {
+    pub fn maximum_position(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Mpos)? & 0x0FFF)
     }
@@ -106,7 +106,7 @@ where
     }
 
     /// Get value of register `MANG`.
-    pub fn get_maximum_angle(&mut self) -> Result<u16, Error<E>> {
+    pub fn maximum_angle(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Mang)? & 0x0FFF)
     }
@@ -118,7 +118,7 @@ where
     }
 
     /// Get value of register `CONF` and parse it.
-    pub fn get_config(&mut self) -> Result<Configuration, Error<E>> {
+    pub fn config(&mut self) -> Result<Configuration, Error<E>> {
         let bytes = self.read_u16(Register::Conf)?;
         configuration::Configuration::try_from(bytes).map_err(Error::Configuration)
     }
@@ -135,14 +135,14 @@ where
 
     /// Get value of register `AGC`.
     /// This value differs depending on the supply voltage (5V or 3v3), see datasheet.
-    pub fn get_automatic_gain_control(&mut self) -> Result<u8, Error<E>> {
+    pub fn automatic_gain_control(&mut self) -> Result<u8, Error<E>> {
         let mut buffer = [0u8; 1];
         self.i2c.write_read(self.address, &[0x1a], &mut buffer)?;
         Ok(buffer[0])
     }
 
     /// Get value of register `MAGNITUDE`.
-    pub fn get_magnitude(&mut self) -> Result<u16, Error<E>> {
+    pub fn magnitude(&mut self) -> Result<u16, Error<E>> {
         // 12-bit value.
         Ok(self.read_u16(Register::Magnitude)? & 0x0FFF)
     }
@@ -151,7 +151,7 @@ where
     /// Only proceeds if position settings (MPOS and ZPOS) have never been persisted before.
     /// See datasheet for constraints.
     pub fn persist_maximum_angle_and_config_settings(&mut self) -> Result<(), Error<E>> {
-        let zmco = self.get_zmco()?;
+        let zmco = self.zmco()?;
         if zmco != 0 {
             return Err(Error::MangConfigPersistenceExhausted);
         }
@@ -164,7 +164,7 @@ where
     /// Burn zero position and maximum to As5600 memory, if ZMCO permits it and a magnet is detected.
     /// See datasheet for constraints.
     pub fn persist_position_settings(&mut self) -> Result<(), Error<E>> {
-        let zmco = self.get_zmco()?;
+        let zmco = self.zmco()?;
         if zmco >= 3 {
             return Err(Error::MaximumPositionPersistsReached);
         }

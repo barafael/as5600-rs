@@ -57,7 +57,7 @@ fn detects_magnet() {
 }
 
 #[test]
-fn get_zmco() {
+fn reads_zmco_register() {
     let i2c = Mock::new(&[
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0000]),
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
@@ -72,7 +72,7 @@ fn get_zmco() {
 
     expected_status
         .iter()
-        .map(|s| (as5600.get_zmco(), *s))
+        .map(|s| (as5600.zmco(), *s))
         .all(|(a, b)| a == Ok(b));
 
     let (mut i2c, _delay) = as5600.release();
@@ -80,7 +80,7 @@ fn get_zmco() {
 }
 
 #[test]
-fn get_zero_position() {
+fn reads_zero_position_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x01],
@@ -90,14 +90,14 @@ fn get_zero_position() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(0b0000_1010_1010_1111, as5600.get_zero_position().unwrap());
+    assert_eq!(0b0000_1010_1010_1111, as5600.zero_position().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_maximum_position() {
+fn reads_maximum_position_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x03],
@@ -107,17 +107,14 @@ fn get_maximum_position() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(
-        0b0000_0010_0010_1010,
-        as5600.get_maximum_position().unwrap()
-    );
+    assert_eq!(0b0000_0010_0010_1010, as5600.maximum_position().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_maximum_angle() {
+fn reads_maximum_angle_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x05],
@@ -127,14 +124,14 @@ fn get_maximum_angle() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(0b0000_1110_1010_1011, as5600.get_maximum_angle().unwrap());
+    assert_eq!(0b0000_1110_1010_1011, as5600.maximum_angle().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_config() {
+fn reads_config_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x07],
@@ -154,14 +151,14 @@ fn get_config() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(expected_config, as5600.get_config().unwrap());
+    assert_eq!(expected_config, as5600.config().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_raw_angle() {
+fn reads_raw_angle_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x0c],
@@ -173,14 +170,14 @@ fn get_raw_angle() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(expected_angle, as5600.get_raw_angle().unwrap());
+    assert_eq!(expected_angle, as5600.raw_angle().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_angle() {
+fn reads_angle_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x0e],
@@ -192,14 +189,14 @@ fn get_angle() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(expected_angle, as5600.get_angle().unwrap());
+    assert_eq!(expected_angle, as5600.angle().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_automatic_gain_control() {
+fn reads_automatic_gain_control_register() {
     let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x1a], vec![0b0101_1010])]);
 
     let expected_agc = 0b0101_1010;
@@ -207,14 +204,14 @@ fn get_automatic_gain_control() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(expected_agc, as5600.get_automatic_gain_control().unwrap());
+    assert_eq!(expected_agc, as5600.automatic_gain_control().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
 }
 
 #[test]
-fn get_magnitude() {
+fn reads_magnitude_register() {
     let i2c = Mock::new(&[Transaction::write_read(
         0x36,
         vec![0x1b],
@@ -226,7 +223,7 @@ fn get_magnitude() {
     let delay = embedded_hal_mock::delay::MockNoop;
     let mut as5600 = As5600::new(i2c, 0x36, delay);
 
-    assert_eq!(expected_magnitude, as5600.get_magnitude().unwrap());
+    assert_eq!(expected_magnitude, as5600.magnitude().unwrap());
 
     let (mut i2c, _delay) = as5600.release();
     i2c.done();
