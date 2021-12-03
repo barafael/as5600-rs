@@ -27,7 +27,7 @@ mod test_reading;
 mod test_writing;
 
 /// As5600 driver instance.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct As5600<I2C, D> {
     i2c: I2C,
     address: u8,
