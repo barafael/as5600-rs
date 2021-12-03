@@ -5,6 +5,7 @@ edition = "2021"
 description = "Platform-independent rust driver for as5600 digital magnetic potentiometer"
 license-file = "LICENSE"
 repository = "https://github.com/barafael/as5600-rs"
+documentation = "https://docs.rs/crate/as5600/latest"
 
 [dev-dependencies]
 embedded-hal-mock = "0.8.0"
