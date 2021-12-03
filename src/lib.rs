@@ -50,27 +50,27 @@ where
     }
 
     /// Get value of register `RAW_ANGLE`.
-    pub fn raw_angle<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u16, Error<E>>
+    pub fn raw_angle<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         Ok(self.read_u16(Register::RawAngle, i2c)? & 0x0FFF)
     }
 
     /// Get value of register `ANGLE`.
-    pub fn angle<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u16, Error<E>>
+    pub fn angle<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         Ok(self.read_u16(Register::Angle, i2c)? & 0x0FFF)
     }
 
     /// Get value of register `ZMCO`.
-    pub fn zmco<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u8, Error<E>>
+    pub fn zmco<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u8, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let mut buffer = [0u8; 1];
         i2c.write_read(self.address, &[Register::Zmco.into()], &mut buffer)?;
@@ -78,9 +78,9 @@ where
     }
 
     /// Get value of register `STATUS`.
-    pub fn magnet_status<I2C, E>(&mut self, i2c: &mut I2C) -> Result<status::Status, Error<E>>
+    pub fn magnet_status<I2c, E>(&mut self, i2c: &mut I2c) -> Result<status::Status, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let mut buffer = [0u8; 1];
         i2c.write_read(self.address, &[Register::Status.into()], &mut buffer)?;
@@ -88,80 +88,80 @@ where
     }
 
     /// Get value of register `ZPOS`.
-    pub fn zero_position<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u16, Error<E>>
+    pub fn zero_position<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         Ok(self.read_u16(Register::Zpos, i2c)? & 0x0FFF)
     }
 
     /// Set value of register `ZPOS`.
-    pub fn set_zero_position<I2C, E>(&mut self, bytes: u16, i2c: &mut I2C) -> Result<(), Error<E>>
+    pub fn set_zero_position<I2c, E>(&mut self, bytes: u16, i2c: &mut I2c) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         self.write_u16(Register::Zpos, bytes & 0x0FFF, i2c)
     }
 
     /// Get value of register `MPOS`.
-    pub fn maximum_position<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u16, Error<E>>
+    pub fn maximum_position<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         Ok(self.read_u16(Register::Mpos, i2c)? & 0x0FFF)
     }
 
     /// Set value of register `MPOS`.
-    pub fn set_maximum_position<I2C, E>(
+    pub fn set_maximum_position<I2c, E>(
         &mut self,
         bytes: u16,
-        i2c: &mut I2C,
+        i2c: &mut I2c,
     ) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         self.write_u16(Register::Mpos, bytes & 0x0FFF, i2c)
     }
 
     /// Get value of register `MANG`.
-    pub fn maximum_angle<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u16, Error<E>>
+    pub fn maximum_angle<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         Ok(self.read_u16(Register::Mang, i2c)? & 0x0FFF)
     }
 
     /// Set value of register `MANG`.
-    pub fn set_maximum_angle<I2C, E>(&mut self, bytes: u16, i2c: &mut I2C) -> Result<(), Error<E>>
+    pub fn set_maximum_angle<I2c, E>(&mut self, bytes: u16, i2c: &mut I2c) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         self.write_u16(Register::Mang, bytes & 0x0FFF, i2c)
     }
 
     /// Get value of register `CONF` and parse it.
-    pub fn config<I2C, E>(&mut self, i2c: &mut I2C) -> Result<Configuration, Error<E>>
+    pub fn config<I2c, E>(&mut self, i2c: &mut I2c) -> Result<Configuration, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let bytes = self.read_u16(Register::Conf, i2c)?;
         configuration::Configuration::try_from(bytes).map_err(Error::Configuration)
     }
 
     /// Set value of register `CONF`.
-    pub fn set_config<I2C, E>(
+    pub fn set_config<I2c, E>(
         &mut self,
         config: Configuration,
-        i2c: &mut I2C,
+        i2c: &mut I2c,
     ) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // See note in datasheet about "blank fields may contain factory settings" on page 18.
         let current_config = self.read_u16(Register::Conf, i2c)?;
@@ -173,9 +173,9 @@ where
 
     /// Get value of register `AGC`.
     /// This value differs depending on the supply voltage (5V or 3v3), see datasheet.
-    pub fn automatic_gain_control<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u8, Error<E>>
+    pub fn automatic_gain_control<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u8, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let mut buffer = [0u8; 1];
         i2c.write_read(self.address, &[0x1a], &mut buffer)?;
@@ -183,9 +183,9 @@ where
     }
 
     /// Get value of register `MAGNITUDE`.
-    pub fn magnitude<I2C, E>(&mut self, i2c: &mut I2C) -> Result<u16, Error<E>>
+    pub fn magnitude<I2c, E>(&mut self, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         // 12-bit value.
         Ok(self.read_u16(Register::Magnitude, i2c)? & 0x0FFF)
@@ -194,12 +194,12 @@ where
     /// Burn maximum angle and config register.
     /// Only proceeds if position settings (MPOS and ZPOS) have never been persisted before.
     /// See datasheet for constraints.
-    pub fn persist_maximum_angle_and_config_settings<I2C, E>(
+    pub fn persist_maximum_angle_and_config_settings<I2c, E>(
         &mut self,
-        i2c: &mut I2C,
+        i2c: &mut I2c,
     ) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let zmco = self.zmco(i2c)?;
         if zmco != 0 {
@@ -212,9 +212,9 @@ where
 
     /// Burn zero position and maximum to As5600 memory, if ZMCO permits it and a magnet is detected.
     /// See datasheet for constraints.
-    pub fn persist_position_settings<I2C, E>(&mut self, i2c: &mut I2C) -> Result<(), Error<E>>
+    pub fn persist_position_settings<I2c, E>(&mut self, i2c: &mut I2c) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let zmco = self.zmco(i2c)?;
         if zmco >= 3 {
@@ -230,9 +230,9 @@ where
     }
 
     /// Helper function for write-reading 2 bytes from the given register.
-    fn read_u16<I2C, E>(&mut self, command: Register, i2c: &mut I2C) -> Result<u16, Error<E>>
+    fn read_u16<I2c, E>(&mut self, command: Register, i2c: &mut I2c) -> Result<u16, Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let mut buffer = [0u8; 2];
         i2c.write_read(self.address, &[command.into()], &mut buffer)?;
@@ -240,14 +240,14 @@ where
     }
 
     /// Helper function for writing 2 bytes to the given register.
-    fn write_u16<I2C, E>(
+    fn write_u16<I2c, E>(
         &mut self,
         command: Register,
         bytes: u16,
-        i2c: &mut I2C,
+        i2c: &mut I2c,
     ) -> Result<(), Error<E>>
     where
-        I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
     {
         let bytes: [u8; 2] = bytes.to_be_bytes();
         let buffer = [u8::from(command), bytes[0], bytes[1]];
