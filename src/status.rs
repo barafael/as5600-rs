@@ -47,7 +47,7 @@ impl TryFrom<[u8; 1]> for Status {
 
 impl From<Status> for u8 {
     fn from(status: Status) -> Self {
-        status as u8
+        status as Self
     }
 }
 

@@ -10,7 +10,7 @@ use embedded_hal_mock::i2c::{Mock, Transaction};
 
 #[test]
 fn set_zero_position() {
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write(0x36, vec![0x01, 0x0A, 0xAF]),
         Transaction::write(0x36, vec![0x01, 0x01, 0x10]),
         Transaction::write(0x36, vec![0x01, 0x0A, 0xCA]),
@@ -18,19 +18,19 @@ fn set_zero_position() {
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
     for angle in [0x1AAF, 0x0110, 0x0ACA, 0x010B] {
-        as5600.set_zero_position(angle).unwrap();
+        as5600.set_zero_position(angle, &mut i2c).unwrap();
     }
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn set_maximum_position() {
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write(0x36, vec![0x03, 0x0F, 0xAF]),
         Transaction::write(0x36, vec![0x03, 0x00, 0x10]),
         Transaction::write(0x36, vec![0x03, 0x0F, 0xAF]),
@@ -38,19 +38,19 @@ fn set_maximum_position() {
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
     for angle in [0xAFAF, 0x2010, 0x1FAF, 0x1100] {
-        as5600.set_maximum_position(angle).unwrap();
+        as5600.set_maximum_position(angle, &mut i2c).unwrap();
     }
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn set_maximum_angle() {
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write(0x36, vec![0x05, 0x0F, 0xFA]),
         Transaction::write(0x36, vec![0x05, 0x00, 0x01]),
         Transaction::write(0x36, vec![0x05, 0x0F, 0xFA]),
@@ -58,13 +58,13 @@ fn set_maximum_angle() {
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
     for angle in [0x0FFA, 0x0001, 0xAFFA, 0x1000] {
-        as5600.set_maximum_angle(angle).unwrap();
+        as5600.set_maximum_angle(angle, &mut i2c).unwrap();
     }
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
@@ -82,102 +82,104 @@ fn set_config() {
     let config_bytes: [u8; 2] = u16::from(config).to_be_bytes();
     let top_most_set = config_bytes[0] | 0b1000_0000;
 
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write_read(0x36, vec![0x07], vec![top_most_set, config_bytes[1]]),
         Transaction::write(0x36, vec![0x07, top_most_set, config_bytes[1]]),
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
-    as5600.set_config(config).unwrap();
+    as5600.set_config(config, &mut i2c).unwrap();
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn burn_angle_succeeds() {
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
         Transaction::write(0x36, vec![0xFF, 0x80]),
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
-    as5600.persist_position_settings().unwrap();
+    as5600.persist_position_settings(&mut i2c).unwrap();
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn burn_angle_fails_due_to_zmco() {
-    let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0011])]);
+    let mut i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0011])]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
     assert_eq!(
-        as5600.persist_position_settings().unwrap_err(),
+        as5600.persist_position_settings(&mut i2c).unwrap_err(),
         Error::MaximumPositionPersistsReached
     );
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn burn_angle_fails_due_to_magnet_detection() {
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x10]),
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
     assert_eq!(
-        as5600.persist_position_settings().unwrap_err(),
+        as5600.persist_position_settings(&mut i2c).unwrap_err(),
         Error::MagnetRequired
     );
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn burn_settings_succeeds() {
-    let i2c = Mock::new(&[
+    let mut i2c = Mock::new(&[
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0000]),
         Transaction::write(0x36, vec![0xFF, 0x40]),
     ]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
-    as5600.persist_maximum_angle_and_config_settings().unwrap();
+    as5600
+        .persist_maximum_angle_and_config_settings(&mut i2c)
+        .unwrap();
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
 
 #[test]
 fn burn_settings_fails_when_zmco_is_not_zero() {
-    let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001])]);
+    let mut i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001])]);
 
     let delay = embedded_hal_mock::delay::MockNoop;
-    let mut as5600 = As5600::new(i2c, 0x36, delay);
+    let mut as5600 = As5600::new(0x36, delay);
 
     assert_eq!(
         as5600
-            .persist_maximum_angle_and_config_settings()
+            .persist_maximum_angle_and_config_settings(&mut i2c)
             .unwrap_err(),
         Error::MangConfigPersistenceExhausted
     );
 
-    let (mut i2c, _delay) = as5600.release();
+    let _delay = as5600.release();
     i2c.done();
 }
