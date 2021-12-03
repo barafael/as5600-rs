@@ -4,6 +4,8 @@
 
 //! Platform-agnostic Rust driver for the AS5600 digital magnetic potentiometer.
 
+#![doc = include_str!("../README.md")]
+
 use configuration::Configuration;
 use embedded_hal::blocking::delay::DelayMs;
 use embedded_hal::blocking::i2c;

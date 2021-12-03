@@ -10,6 +10,7 @@ repository = "https://github.com/barafael/as5600-rs"
 embedded-hal-mock = "0.8.0"
 proptest = "1.0.0"
 proptest-derive = "0.3.0"
+linux-embedded-hal = "0.3.2"
 
 [dependencies]
 embedded-hal = "0.2.6"
