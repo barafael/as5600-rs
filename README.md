@@ -12,7 +12,7 @@ Rust Embedded HAL driver for the AS5600 contactless 12-bit digital potentiometer
 
 Here's how using this driver looks on a raspberry pi:
 
-```no_run
+```rust,no_run
 use std::{thread, time::Duration};
 
 use as5600::As5600;
