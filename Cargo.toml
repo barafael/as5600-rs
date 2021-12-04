@@ -1,6 +1,6 @@
 [package]
 name = "as5600"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 description = "Platform-independent rust driver for as5600 digital magnetic potentiometer"
 license = "MIT OR Apache-2.0"
