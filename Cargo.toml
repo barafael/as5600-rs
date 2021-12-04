@@ -3,7 +3,7 @@ name = "as5600"
 version = "0.3.0"
 edition = "2021"
 description = "Platform-independent rust driver for as5600 digital magnetic potentiometer"
-license-file = "LICENSE"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/barafael/as5600-rs"
 documentation = "https://docs.rs/crate/as5600/latest"
 
