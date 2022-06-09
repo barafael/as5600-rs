@@ -30,23 +30,14 @@ mod test_writing;
 
 /// As5600 driver instance.
 #[derive(Debug, PartialEq)]
-pub struct As5600<D> {
+pub struct As5600 {
     address: u8,
-    delay: D,
 }
 
-impl<D> As5600<D>
-where
-    D: DelayMs<u32>,
-{
+impl As5600 {
     /// Create a new As5600 driver instance.
-    pub fn new(address: u8, delay: D) -> Self {
-        Self { address, delay }
-    }
-
-    /// Release this drivers' resources, dropping it.
-    pub fn release(self) -> D {
-        self.delay
+    pub fn new(address: u8) -> Self {
+        Self { address }
     }
 
     /// Get value of register `RAW_ANGLE`.
@@ -194,27 +185,34 @@ where
     /// Burn maximum angle and config register.
     /// Only proceeds if position settings (MPOS and ZPOS) have never been persisted before.
     /// See datasheet for constraints.
-    pub fn persist_maximum_angle_and_config_settings<I2c, E>(
+    pub fn persist_maximum_angle_and_config_settings<I2c, D, E>(
         &mut self,
         i2c: &mut I2c,
+        delay: &mut D,
     ) -> Result<(), Error<E>>
     where
         I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        D: DelayMs<u32>,
     {
         let zmco = self.zmco(i2c)?;
         if zmco != 0 {
             return Err(Error::MangConfigPersistenceExhausted);
         }
         i2c.write(self.address, &[Register::Burn.into(), 0x40])?;
-        self.delay.delay_ms(1);
+        delay.delay_ms(1);
         Ok(())
     }
 
     /// Burn zero position and maximum to As5600 memory, if ZMCO permits it and a magnet is detected.
     /// See datasheet for constraints.
-    pub fn persist_position_settings<I2c, E>(&mut self, i2c: &mut I2c) -> Result<(), Error<E>>
+    pub fn persist_position_settings<I2c, D, E>(
+        &mut self,
+        i2c: &mut I2c,
+        delay: &mut D,
+    ) -> Result<(), Error<E>>
     where
         I2c: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error = E>,
+        D: DelayMs<u32>,
     {
         let zmco = self.zmco(i2c)?;
         if zmco >= 3 {
@@ -225,7 +223,7 @@ where
         }
         i2c.write(self.address, &[Register::Burn.into(), 0x80])
             .map_err(Error::Communication)?;
-        self.delay.delay_ms(1);
+        delay.delay_ms(1);
         Ok(())
     }
 
