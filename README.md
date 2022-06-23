@@ -46,6 +46,12 @@ fn main() {
 }
 ```
 
+# TODO for a more relaxed and civilized age
+
+ [ ] make a wooden harness for the as5600 with a knob that turns a radial magnet at the right distance to the sensor
+ [ ] make a CLI/GUI tool similar to [ebyte-e32-ui](https://github.com/barafael/ebyte-e32-ui)
+ [ ] use klask progress bars or something comparable to show the current magnet angle
+
 ## License
 
 Licensed under either of
