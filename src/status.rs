@@ -5,14 +5,14 @@ use num_traits::FromPrimitive;
 use proptest_derive::Arbitrary;
 
 /// Magnet detection status parsing/conversion error.
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Error {
     /// Bit pattern not valid for magnet detection status.
     InvalidBitPattern(u8),
 }
 
 /// Magnet detection status.
-#[derive(Debug, Copy, Clone, PartialEq, FromPrimitive)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, FromPrimitive)]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum Status {
