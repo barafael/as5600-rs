@@ -1,5 +1,5 @@
 /// Errors of converting/parsing configuration bytes.
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Error {
     /// Invalid power mode bit pattern.
     PowerModeBitPattern(u8),

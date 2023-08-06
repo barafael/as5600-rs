@@ -20,26 +20,26 @@ use linux_embedded_hal::I2cdev;
 
 fn main() {
     let mut i2c = I2cdev::new("/dev/i2c-1").unwrap();
-    let mut as5600 = As5600::new(as5600::constants::DEFAULT_I2C_ADDRESS);
-    let config = as5600.config(&mut i2c).unwrap();
+    let mut as5600 = As5600::new(i2c);
+    let config = as5600.config().unwrap();
     println!("{:?}", config);
 
-    thread::sleep(Duration::from_secs(5));
+    thread::sleep(Duration::from_secs(2));
 
-    let status = as5600.magnet_status(&mut i2c).unwrap();
-    let agc = as5600.automatic_gain_control(&mut i2c).unwrap();
-    let mag = as5600.magnitude(&mut i2c).unwrap();
-    let zmco = as5600.zmco(&mut i2c).unwrap();
+    let status = as5600.magnet_status().unwrap();
+    let agc = as5600.automatic_gain_control().unwrap();
+    let mag = as5600.magnitude().unwrap();
+    let zmco = as5600.zmco().unwrap();
 
     println!("{:?}", status);
     println!("{:?}", agc);
     println!("{:?}", mag);
     println!("{:?}", zmco);
 
-    thread::sleep(Duration::from_secs(5));
+    thread::sleep(Duration::from_secs(2));
 
     loop {
-        let value = as5600.angle(&mut i2c).unwrap();
+        let value = as5600.angle().unwrap();
         println!("{:?}", value);
         thread::sleep(Duration::from_millis(100));
     }
@@ -57,9 +57,9 @@ fn main() {
 Licensed under either of
 
  * Apache License, Version 2.0
-   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+   ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
  * MIT license
-   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+   ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 

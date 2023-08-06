@@ -1,7 +1,7 @@
 use crate::{configuration, status};
 
 /// Crate errors.
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Error<E> {
     /// `I2C` communication error.
     Communication(E),

@@ -30,7 +30,7 @@ mod test_reading;
 mod test_writing;
 
 /// As5600 driver instance.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct As5600<I2C> {
     address: u8,
     bus: I2C,
@@ -45,6 +45,11 @@ impl<E, I2C: i2c::Read<Error = E> + i2c::Write<Error = E> + i2c::WriteRead<Error
     /// Create a new As5600 driver instance.
     pub fn with_address(address: u8, bus: I2C) -> Self {
         Self { address, bus }
+    }
+
+    /// Release the bus, consuming the driver.
+    pub fn release(self) -> I2C {
+        self.bus
     }
 
     /// Get value of register `RAW_ANGLE`.
