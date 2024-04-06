@@ -6,7 +6,10 @@ use crate::{
     error::Error,
     As5600,
 };
-use embedded_hal_mock::i2c::{Mock, Transaction};
+use embedded_hal_mock::eh1::{
+    delay::NoopDelay,
+    i2c::{Mock, Transaction},
+};
 
 #[test]
 fn set_zero_position() {
@@ -83,7 +86,7 @@ fn burn_angle_succeeds() {
         Transaction::write_read(0x36, vec![0x0b], vec![0x20]),
         Transaction::write(0x36, vec![0xFF, 0x80]),
     ]);
-    let mut delay = embedded_hal_mock::delay::MockNoop;
+    let mut delay = NoopDelay;
     let mut as5600 = As5600::new(i2c);
     as5600.persist_position_settings(&mut delay).unwrap();
     as5600.release().done();
@@ -92,7 +95,7 @@ fn burn_angle_succeeds() {
 #[test]
 fn burn_angle_fails_due_to_zmco() {
     let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0011])]);
-    let mut delay = embedded_hal_mock::delay::MockNoop;
+    let mut delay = NoopDelay;
     let mut as5600 = As5600::new(i2c);
     assert_eq!(
         as5600.persist_position_settings(&mut delay).unwrap_err(),
@@ -107,7 +110,7 @@ fn burn_angle_fails_due_to_magnet_detection() {
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001]),
         Transaction::write_read(0x36, vec![0x0b], vec![0x10]),
     ]);
-    let mut delay = embedded_hal_mock::delay::MockNoop;
+    let mut delay = NoopDelay;
     let mut as5600 = As5600::new(i2c);
     assert_eq!(
         as5600.persist_position_settings(&mut delay).unwrap_err(),
@@ -122,7 +125,7 @@ fn burn_settings_succeeds() {
         Transaction::write_read(0x36, vec![0x00], vec![0b0000_0000]),
         Transaction::write(0x36, vec![0xFF, 0x40]),
     ]);
-    let mut delay = embedded_hal_mock::delay::MockNoop;
+    let mut delay = NoopDelay;
     let mut as5600 = As5600::new(i2c);
     as5600
         .persist_maximum_angle_and_config_settings(&mut delay)
@@ -133,7 +136,7 @@ fn burn_settings_succeeds() {
 #[test]
 fn burn_settings_fails_when_zmco_is_not_zero() {
     let i2c = Mock::new(&[Transaction::write_read(0x36, vec![0x00], vec![0b0000_0001])]);
-    let mut delay = embedded_hal_mock::delay::MockNoop;
+    let mut delay = NoopDelay;
     let mut as5600 = As5600::new(i2c);
     assert_eq!(
         as5600

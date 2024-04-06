@@ -8,12 +8,12 @@ repository = "https://github.com/barafael/as5600-rs"
 documentation = "https://docs.rs/crate/as5600/latest"
 
 [dev-dependencies]
-embedded-hal-mock = "0.9.0"
-linux-embedded-hal = "0.3.2"
-proptest = "1.2.0"
-proptest-derive = "0.3.0"
+embedded-hal-mock = { version = "0.10", features = ["eh1"] }
+linux-embedded-hal = "0.4"
+proptest = "1"
+proptest-derive = "0.4"
 
 [dependencies]
-embedded-hal = "0.2.7"
-num-derive = "0.4.0"
-num-traits = { version = "0.2.16", default-features = false }
+embedded-hal = "1"
+num-derive = "0.4"
+num-traits = { version = "0.2", default-features = false }

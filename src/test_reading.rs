@@ -7,7 +7,7 @@ use crate::{
     status::{self, Status},
     As5600,
 };
-use embedded_hal_mock::i2c::{Mock, Transaction};
+use embedded_hal_mock::eh1::i2c::{Mock, Transaction};
 
 #[test]
 fn detects_magnet() {

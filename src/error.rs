@@ -1,6 +1,6 @@
 use crate::{configuration, status};
 
-/// Crate errors.
+/// All possible errors in this crate.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Error<E> {
     /// `I2C` communication error.
@@ -20,10 +20,4 @@ pub enum Error<E> {
 
     /// No more persistent writes available for maximum angle and configuration registers.
     MangConfigPersistenceExhausted,
-}
-
-impl<E> From<E> for Error<E> {
-    fn from(e: E) -> Self {
-        Self::Communication(e)
-    }
 }
