@@ -1,5 +1,6 @@
 /// Errors of converting/parsing configuration bytes.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     /// Invalid power mode bit pattern.
     PowerModeBitPattern(u8),

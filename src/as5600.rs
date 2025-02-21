@@ -9,6 +9,7 @@ use crate::status::Status;
 
 /// As5600 driver instance.
 #[derive(Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct As5600<I2C> {
     address: u8,
     bus: I2C,
