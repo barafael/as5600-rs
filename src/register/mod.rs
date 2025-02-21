@@ -4,6 +4,7 @@ use proptest_derive::Arbitrary;
 pub mod error;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[cfg_attr(test, derive(Arbitrary))]
 #[repr(u8)]
 pub enum Register {

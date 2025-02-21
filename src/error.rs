@@ -2,6 +2,8 @@ use crate::{configuration, status};
 
 /// All possible errors in this crate.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+
 pub enum Error<E> {
     /// `I2C` communication error.
     Communication(E),
