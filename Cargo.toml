@@ -12,7 +12,7 @@ async = ["dep:embedded-hal-async"]
 defmt = ["dep:defmt"]
 
 [dev-dependencies]
-embedded-hal-mock = { version = "0.10", features = ["eh1"] }
+embedded-hal-mock = { version = "0.11", features = ["eh1"] }
 linux-embedded-hal = "0.4"
 proptest = "1"
 proptest-derive = "0.4"
@@ -22,4 +22,4 @@ embedded-hal = "1"
 embedded-hal-async = { version = "1", optional = true }
 num-derive = "0.4"
 num-traits = { version = "0.2", default-features = false }
-defmt = { version = "0.3", optional = true }
+defmt = { version = "1", optional = true }
