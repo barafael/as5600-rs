@@ -22,4 +22,8 @@ pub enum Error<E> {
 
     /// No more persistent writes available for maximum angle and configuration registers.
     MangConfigPersistenceExhausted,
+
+    /// Invalid I2C address for AS5600L. Address must be between 8 and 119.
+    #[cfg(feature = "as5600l")]
+    InvalidAddress,
 }
