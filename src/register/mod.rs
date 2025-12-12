@@ -28,6 +28,12 @@ pub enum Register {
     Agc = 0x1A,
     /// This value holds the measured magnitude of the applied magnetic field.
     Magnitude = 0x1B,
+    #[cfg(feature = "as5600l")]
+    /// I2C address register (AS5600L only).
+    I2CAddress = 0x20,
+    #[cfg(feature = "as5600l")]
+    /// I2C update register (AS5600L only).
+    I2CUPDT = 0x21,
     Burn = 0xFF,
 }
 
@@ -52,6 +58,10 @@ impl TryFrom<u8> for Register {
             0x1A => Ok(Self::Agc),
             0x1B => Ok(Self::Magnitude),
             0xFF => Ok(Self::Burn),
+            #[cfg(feature = "as5600l")]
+            0x20 => Ok(Self::I2CAddress),
+            #[cfg(feature = "as5600l")]
+            0x21 => Ok(Self::I2CUPDT),
             _ => Err(error::Error::Register(byte)),
         }
     }

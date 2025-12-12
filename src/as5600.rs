@@ -173,6 +173,44 @@ where
         Ok(())
     }
 
+    /// Set the I2C address.
+    ///
+    /// This function is only available for AS5600L devices.
+    /// The address must be between 8 and 119 (0x08 and 0x77).
+    /// The address is automatically shifted left by 1 bit before writing to the device.
+    #[cfg(feature = "as5600l")]
+    pub fn set_address(&mut self, address: u8) -> Result<(), Error<E>> {
+        // Skip reserved I2C addresses (same validation as C implementation)
+        if address < 8 || address > 119 {
+            return Err(Error::InvalidAddress);
+        }
+
+        // Note: address needs to be shifted 1 bit (same as C implementation)
+        let shifted_address = address << 1;
+        self.bus
+            .write(
+                self.address,
+                &[Register::I2CAddress.into(), shifted_address],
+            )
+            .map_err(Error::Communication)?;
+        self.bus
+            .write(self.address, &[Register::I2CUPDT.into(), shifted_address])
+            .map_err(Error::Communication)?;
+        self.address = address;
+        Ok(())
+    }
+
+    /// Burn the current address to the AS5600L memory.
+    ///
+    /// This function is only available for AS5600L devices.
+    #[cfg(feature = "as5600l")]
+    pub fn persist_address(&mut self) -> Result<(), Error<E>> {
+        self.bus
+            .write(self.address, &[Register::Burn.into(), 0x40])
+            .map_err(Error::Communication)?;
+        Ok(())
+    }
+
     /// Helper function for write-reading 2 bytes from the given register.
     fn read_u16(&mut self, command: Register) -> Result<u16, Error<E>> {
         let mut buffer = [0u8; 2];
